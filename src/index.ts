@@ -1,6 +1,10 @@
+import fs from 'fs';
 import { Context, Schema, Session, h } from 'koishi';
 import 'koishi-plugin-adapter-onebot';
-import { saveImages } from './image-helper.js';
+import { CQCode } from 'koishi-plugin-adapter-onebot';
+import { Message } from 'koishi-plugin-adapter-onebot/lib/types';
+import path from 'node:path';
+import { saveImages } from './image-helper';
 
 export const name = 'echo-cave';
 
@@ -16,6 +20,7 @@ export interface EchoCave {
     createTime: Date;
     userId: string;
     originUserId: string;
+    type: 'forward' | 'msg';
     content: string;
 }
 
@@ -26,6 +31,12 @@ declare module 'koishi' {
 }
 
 export function apply(ctx: Context) {
+    const imgPath = path.join(ctx.baseDir, 'data', 'cave', 'images');
+
+    if (!fs.existsSync(imgPath)) {
+        fs.mkdirSync(imgPath, { recursive: true });
+    }
+
     ctx.model.extend(
         'echo_cave',
         {
@@ -34,7 +45,8 @@ export function apply(ctx: Context) {
             createTime: 'timestamp',
             userId: 'string',
             originUserId: 'string',
-            content: 'string',
+            type: 'string',
+            content: 'text',
         },
         {
             primary: 'id',
@@ -67,7 +79,15 @@ async function getCave(ctx: Context, session: Session) {
         return '🚀 回声洞中暂无消息，快使用 "cave.echo" 命令添加第一条消息吧！';
     }
 
-    return h.parse(caves[Math.floor(Math.random() * caves.length)].content);
+    const caveMessage = caves[Math.floor(Math.random() * caves.length)];
+
+    const content = JSON.parse(caveMessage.content);
+
+    if (caveMessage.type === 'forward') {
+        await session.onebot.sendGroupForwardMsg(channelId, content);
+    } else {
+        await session.onebot.sendGroupMsg(channelId, content);
+    }
 }
 
 async function addCave(ctx: Context, session: Session) {
@@ -80,24 +100,29 @@ async function addCave(ctx: Context, session: Session) {
     }
 
     const { userId, channelId, quote } = session;
-    const elements = quote.elements;
+    const messageId = quote.id;
 
-    elements.forEach((element) => {
-        ctx.logger('echo-cave').info(
-            `Processing element type: ${element.type}`
+    let content: string | CQCode[];
+    let type: 'forward' | 'msg';
+
+    if (quote.elements[0].type === 'forward') {
+        type = 'forward';
+
+        const message = await reconstructForwardMsg(
+            ctx,
+            session,
+            await session.onebot.getForwardMsg(messageId)
         );
-        if (element.type === 'img') {
-            element.attrs.src = saveImages(ctx, session, element);
-        }
-    });
 
-    /*
-    ctx.logger('echo-cave').info(
-        `User ${userId} is adding a message to the echo cave: ${content}`
-    );
-    */
+        content = JSON.stringify(message);
+    } else {
+        type = 'msg';
 
-    const content = JSON.stringify(elements);
+        content = JSON.stringify(
+            (await session.onebot.getMsg(messageId)).message
+        );
+    }
+
     await ctx.database.get('echo_cave', { content }).then((existing) => {
         if (existing) {
             return '♻️ 该消息已存在于回声洞穴中！';
@@ -106,27 +131,77 @@ async function addCave(ctx: Context, session: Session) {
 
     try {
         const result = await ctx.database.create('echo_cave', {
-            channelId: channelId,
+            channelId,
             createTime: new Date(),
-            userId: userId,
+            userId,
             originUserId: quote.user.id,
+            type,
             content,
         });
 
-        if (session.onebot) {
-            const messageId = await session.onebot.sendGroupMsg(
-                session.channelId,
-                `✅ 回声洞消息已成功存入，消息 ID：${result.id}`
-            );
-            ctx.setTimeout(
-                async () => await session.onebot.deleteMsg(messageId),
-                5000
-            );
-        } else {
-            return `✅ 回声洞消息已成功存入，消息 ID：${result.id}`;
-        }
+        const messageId = await session.onebot.sendGroupMsg(
+            session.channelId,
+            `✅ 回声洞消息已成功存入，消息 ID：${result.id}`
+        );
+        ctx.setTimeout(
+            async () => await session.onebot.deleteMsg(messageId),
+            5000
+        );
     } catch (error) {
         this.ctx.logger.warn('上架商品失败:', error);
         return '❌ 上架商品失败，请稍后重试！';
     }
+}
+
+export async function reconstructForwardMsg(
+    ctx: Context,
+    message: Message[]
+): Promise<CQCode[]> {
+    return Promise.all(
+        message.map(async (msg: Message) => {
+            const content = await processMessageContent(ctx, msg);
+
+            return {
+                type: 'node',
+                data: {
+                    user_id: msg.sender.user_id,
+                    nick_name: msg.sender.nickname,
+                    content,
+                },
+            };
+        })
+    );
+}
+
+async function processMessageContent(
+    ctx: Context,
+    msg: Message
+): Promise<string | CQCode[]> {
+    // deal with text message
+    if (typeof msg.message === 'string') {
+        return msg.message;
+    }
+
+    // deal with forward message
+    const firstElement = msg.message[0];
+    if (firstElement?.type === 'forward') {
+        return reconstructForwardMsg(ctx, firstElement.data.content);
+    }
+
+    // deal with normal message
+    return Promise.all(
+        msg.message.map(async (element) => {
+            if (element.type === 'image') {
+                return {
+                    ...element,
+                    data: {
+                        ...element.data,
+                        url: await saveImages(ctx, element.data),
+                    },
+                };
+            }
+
+            return element;
+        })
+    );
 }

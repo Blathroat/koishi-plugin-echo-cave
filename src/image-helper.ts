@@ -2,14 +2,15 @@
 import { promises } from 'node:fs';
 import path from 'node:path';
 
-export async function saveImages(
-    ctx: Context,
-    session: Session,
-    imgElement: h
-) {
-    const imgUrl = imgElement.attrs.src;
+export interface ImgData {
+    file: string;
+    url: string;
+}
 
-    const originalImgName = imgElement.attrs.file as string;
+export async function saveImages(ctx: Context, imgElement: ImgData) {
+    const imgUrl = imgElement.url;
+
+    const originalImgName = imgElement.file as string;
     const lastDotIndex = originalImgName.lastIndexOf('.');
 
     let imgExt = '';
@@ -20,7 +21,7 @@ export async function saveImages(
     }
 
     const imgPath = path.join(ctx.baseDir, 'data', 'cave', 'images');
-    const imgName = new Date().toISOString();
+    const imgName = new Date().getTime().toString();
     let fullImgPath = path.join(imgPath, `${imgName}.${imgExt}`);
 
     ctx.logger.info(`Saving image from URL: ${imgUrl} to path: ${fullImgPath}`);
