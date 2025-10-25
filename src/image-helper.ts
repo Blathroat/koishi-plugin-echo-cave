@@ -1,16 +1,14 @@
-﻿import { Context, Session, h } from 'koishi';
+﻿import { Context } from 'koishi';
 import { promises } from 'node:fs';
 import path from 'node:path';
 
-export interface ImgData {
-    file: string;
-    url: string;
-}
+export async function saveImages(
+    ctx: Context,
+    imgElement: Record<string, any>
+) {
+    const imgUrl: string = imgElement.url;
 
-export async function saveImages(ctx: Context, imgElement: ImgData) {
-    const imgUrl = imgElement.url;
-
-    const originalImgName = imgElement.file as string;
+    const originalImgName: string = imgElement.file;
     const lastDotIndex = originalImgName.lastIndexOf('.');
 
     let imgExt = '';

@@ -1,7 +1,7 @@
+import '@pynickle/koishi-plugin-adapter-onebot';
+import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import fs from 'fs';
 import { Context, Schema, Session } from 'koishi';
-import 'koishi-plugin-adapter-onebot';
-import { CQCode } from 'koishi-plugin-adapter-onebot';
 import path from 'node:path';
 import { reconstructForwardMsg } from './forward-helper';
 import { sendCaveMsg } from './msg-helper';

@@ -1,6 +1,6 @@
-﻿import { Context } from 'koishi';
-import { CQCode } from 'koishi-plugin-adapter-onebot';
-import { Message } from 'koishi-plugin-adapter-onebot/lib/types';
+﻿import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
+import { Message } from '@pynickle/koishi-plugin-adapter-onebot/lib/types';
+import { Context } from 'koishi';
 import { saveImages } from './image-helper';
 
 export async function reconstructForwardMsg(

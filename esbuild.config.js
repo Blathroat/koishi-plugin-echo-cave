@@ -8,6 +8,6 @@ await build({
     platform: 'node',
     external: [
         'koishi',
-        'koishi-plugin-adapter-onebot',
+        '@pynickle/koishi-plugin-adapter-onebot',
     ],
 })
