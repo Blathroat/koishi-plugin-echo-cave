@@ -11,5 +11,4 @@ await build({
         'koishi',
         'koishi-plugin-adapter-onebot',
     ],
-    plugins: [yamlPlugin.yamlPlugin({})],
 })
