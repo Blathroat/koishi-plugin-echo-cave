@@ -63,7 +63,7 @@ async function getCave(ctx: Context, session: Session) {
     });
 
     if (caves.length === 0) {
-        return '回声洞中暂无消息，快使用 "cave.echo" 命令添加第一条消息吧！';
+        return '🚀 回声洞中暂无消息，快使用 "cave.echo" 命令添加第一条消息吧！';
     }
 
     return caves[Math.floor(Math.random() * caves.length)].content;
@@ -75,7 +75,7 @@ async function addCave(ctx: Context, session: Session) {
     }
 
     if (!session.quote) {
-        return '请引用一条消息后再使用此命令！';
+        return '💡 请引用一条消息后再使用此命令！';
     }
 
     const { userId, channelId } = session;
@@ -87,7 +87,7 @@ async function addCave(ctx: Context, session: Session) {
 
     await ctx.database.get('echo_cave', { content }).then((existing) => {
         if (existing) {
-            return '该消息已存在于回声洞穴中！';
+            return '♻️ 该消息已存在于回声洞穴中！';
         }
     });
 
