@@ -67,7 +67,7 @@ async function getCave(ctx: Context, session: Session) {
         return '🚀 回声洞中暂无消息，快使用 "cave.echo" 命令添加第一条消息吧！';
     }
 
-    return caves[Math.floor(Math.random() * caves.length)].content;
+    return h.parse(caves[Math.floor(Math.random() * caves.length)].content);
 }
 
 async function addCave(ctx: Context, session: Session) {
@@ -91,14 +91,13 @@ async function addCave(ctx: Context, session: Session) {
         }
     });
 
-    const content = JSON.stringify(elements);
-
     /*
     ctx.logger('echo-cave').info(
         `User ${userId} is adding a message to the echo cave: ${content}`
     );
     */
 
+    const content = JSON.stringify(elements);
     await ctx.database.get('echo_cave', { content }).then((existing) => {
         if (existing) {
             return '♻️ 该消息已存在于回声洞穴中！';
@@ -111,7 +110,7 @@ async function addCave(ctx: Context, session: Session) {
             createTime: new Date(),
             userId: userId,
             originUserId: quote.user.id,
-            content: content,
+            content,
         });
 
         if (session.onebot) {
