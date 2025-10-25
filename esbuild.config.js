@@ -9,6 +9,7 @@ await build({
     platform: 'node',
     external: [
         'koishi',
+        'koishi-plugin-adapter-onebot',
     ],
     plugins: [yamlPlugin.yamlPlugin({})],
 })
