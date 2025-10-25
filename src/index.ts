@@ -1,5 +1,6 @@
-import { Context, Schema, Session } from 'koishi';
+import { Context, Schema, Session, h } from 'koishi';
 import 'koishi-plugin-adapter-onebot';
+import { saveImages } from './image-helper.js';
 
 export const name = 'echo-cave';
 
@@ -33,7 +34,7 @@ export function apply(ctx: Context) {
             createTime: 'timestamp',
             userId: 'string',
             originUserId: 'string',
-            content: 'text',
+            content: 'string',
         },
         {
             primary: 'id',
@@ -78,12 +79,25 @@ async function addCave(ctx: Context, session: Session) {
         return '💡 请引用一条消息后再使用此命令！';
     }
 
-    const { userId, channelId } = session;
-    const content = session.quote.content;
+    const { userId, channelId, quote } = session;
+    const elements = quote.elements;
 
+    elements.forEach((element) => {
+        ctx.logger('echo-cave').info(
+            `Processing element type: ${element.type}`
+        );
+        if (element.type === 'img') {
+            element.attrs.src = saveImages(ctx, session, element);
+        }
+    });
+
+    const content = JSON.stringify(elements);
+
+    /*
     ctx.logger('echo-cave').info(
         `User ${userId} is adding a message to the echo cave: ${content}`
     );
+    */
 
     await ctx.database.get('echo_cave', { content }).then((existing) => {
         if (existing) {
@@ -92,12 +106,11 @@ async function addCave(ctx: Context, session: Session) {
     });
 
     try {
-        // 创建商品记录
         const result = await ctx.database.create('echo_cave', {
             channelId: channelId,
             createTime: new Date(),
             userId: userId,
-            originUserId: userId,
+            originUserId: quote.user.id,
             content: content,
         });
 
@@ -106,7 +119,7 @@ async function addCave(ctx: Context, session: Session) {
                 session.channelId,
                 `✅ 回声洞消息已成功存入，消息 ID：${result.id}`
             );
-            ctx.setInterval(
+            ctx.setTimeout(
                 async () => await session.onebot.deleteMsg(messageId),
                 5000
             );
