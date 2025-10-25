@@ -1,5 +1,4 @@
 ﻿import { build } from 'esbuild'
-import yamlPlugin from 'esbuild-plugin-yaml'
 
 await build({
     entryPoints: ['src/index.ts'],
