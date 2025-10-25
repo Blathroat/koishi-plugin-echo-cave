@@ -43,15 +43,15 @@ export function apply(ctx: Context) {
     );
 
     ctx.command('cave', '随机获取回声洞消息').action(
-        async ({ session }) => await getCave(ctx, { session })
+        async ({ session }) => await getCave(ctx, session)
     );
 
     ctx.command('cave.echo', '将消息存入回声洞穴').action(
-        async ({ session }) => await addCave(ctx, { session })
+        async ({ session }) => await addCave(ctx, session)
     );
 }
 
-async function getCave(ctx: Context, { session }: { session: Session }) {
+async function getCave(ctx: Context, session: Session) {
     if (!session.guildId) {
         return '❌ 请在群聊中使用该命令！';
     }
@@ -69,7 +69,7 @@ async function getCave(ctx: Context, { session }: { session: Session }) {
     return caves[Math.floor(Math.random() * caves.length)].content;
 }
 
-async function addCave(ctx: Context, { session }: { session: Session }) {
+async function addCave(ctx: Context, session: Session) {
     if (!session.guildId) {
         return '❌ 请在群聊中使用该命令！';
     }
