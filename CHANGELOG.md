@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.0.0...v1.1.0) (2025-10-25)
+
+### ✨ Features
+
+* add save image for image in content ([6be5d51](https://github.com/pynickle/koishi-plugin-echo-cave/commit/6be5d51895339e4709053660e389fadd142cbba1))
+
 ## 1.0.0 (2025-10-25)
 
 ### ✨ Features
