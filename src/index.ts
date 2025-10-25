@@ -1,10 +1,10 @@
 import fs from 'fs';
-import { Context, Schema, Session, h } from 'koishi';
+import { Context, Schema, Session } from 'koishi';
 import 'koishi-plugin-adapter-onebot';
 import { CQCode } from 'koishi-plugin-adapter-onebot';
-import { Message } from 'koishi-plugin-adapter-onebot/lib/types';
 import path from 'node:path';
-import { saveImages } from './image-helper';
+import { reconstructForwardMsg } from './forward-helper';
+import { sendCaveMsg } from './msg-helper';
 
 export const name = 'echo-cave';
 
@@ -55,39 +55,46 @@ export function apply(ctx: Context) {
         }
     );
 
-    ctx.command('cave', '随机获取回声洞消息').action(
-        async ({ session }) => await getCave(ctx, session)
-    );
+    ctx.command(
+        'cave [id:number]',
+        '随机获取 / 获取特定 id 的回声洞信息'
+    ).action(async ({ session }, id) => await getCave(ctx, session, id));
 
     ctx.command('cave.echo', '将消息存入回声洞穴').action(
         async ({ session }) => await addCave(ctx, session)
     );
 }
 
-async function getCave(ctx: Context, session: Session) {
+async function getCave(ctx: Context, session: Session, id: number) {
     if (!session.guildId) {
         return '❌ 请在群聊中使用该命令！';
     }
 
-    const { channelId } = session;
+    let caveMsg: EchoCave;
 
-    const caves = await ctx.database.get('echo_cave', {
-        channelId,
-    });
+    if (!id) {
+        const { channelId } = session;
 
-    if (caves.length === 0) {
-        return '🚀 回声洞中暂无消息，快使用 "cave.echo" 命令添加第一条消息吧！';
-    }
+        const caves = await ctx.database.get('echo_cave', {
+            channelId,
+        });
 
-    const caveMessage = caves[Math.floor(Math.random() * caves.length)];
+        if (caves.length === 0) {
+            return '🚀 回声洞中暂无消息，快使用 "cave.echo" 命令添加第一条消息吧！';
+        }
 
-    const content = JSON.parse(caveMessage.content);
-
-    if (caveMessage.type === 'forward') {
-        await session.onebot.sendGroupForwardMsg(channelId, content);
+        caveMsg = caves[Math.floor(Math.random() * caves.length)];
     } else {
-        await session.onebot.sendGroupMsg(channelId, content);
+        const caves = await ctx.database.get('echo_cave', id);
+
+        if (caves.length === 0) {
+            return '🔍 未找到该 ID 的回声洞消息';
+        }
+
+        caveMsg = caves[0];
     }
+
+    await sendCaveMsg(session, caveMsg);
 }
 
 async function addCave(ctx: Context, session: Session) {
@@ -110,7 +117,6 @@ async function addCave(ctx: Context, session: Session) {
 
         const message = await reconstructForwardMsg(
             ctx,
-            session,
             await session.onebot.getForwardMsg(messageId)
         );
 
@@ -151,57 +157,4 @@ async function addCave(ctx: Context, session: Session) {
         this.ctx.logger.warn('上架商品失败:', error);
         return '❌ 上架商品失败，请稍后重试！';
     }
-}
-
-export async function reconstructForwardMsg(
-    ctx: Context,
-    message: Message[]
-): Promise<CQCode[]> {
-    return Promise.all(
-        message.map(async (msg: Message) => {
-            const content = await processMessageContent(ctx, msg);
-
-            return {
-                type: 'node',
-                data: {
-                    user_id: msg.sender.user_id,
-                    nick_name: msg.sender.nickname,
-                    content,
-                },
-            };
-        })
-    );
-}
-
-async function processMessageContent(
-    ctx: Context,
-    msg: Message
-): Promise<string | CQCode[]> {
-    // deal with text message
-    if (typeof msg.message === 'string') {
-        return msg.message;
-    }
-
-    // deal with forward message
-    const firstElement = msg.message[0];
-    if (firstElement?.type === 'forward') {
-        return reconstructForwardMsg(ctx, firstElement.data.content);
-    }
-
-    // deal with normal message
-    return Promise.all(
-        msg.message.map(async (element) => {
-            if (element.type === 'image') {
-                return {
-                    ...element,
-                    data: {
-                        ...element.data,
-                        url: await saveImages(ctx, element.data),
-                    },
-                };
-            }
-
-            return element;
-        })
-    );
 }

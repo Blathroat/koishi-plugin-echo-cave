@@ -24,7 +24,9 @@ export async function saveImages(ctx: Context, imgElement: ImgData) {
     const imgName = new Date().getTime().toString();
     let fullImgPath = path.join(imgPath, `${imgName}.${imgExt}`);
 
-    ctx.logger.info(`Saving image from URL: ${imgUrl} to path: ${fullImgPath}`);
+    ctx.logger.info(
+        `Saving image from URL: ${imgUrl} to path: ${imgName}.${imgExt}`
+    );
 
     const buffer = await ctx.http.get(imgUrl);
 
