@@ -1,3 +1,15 @@
+## [1.2.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.1.1...v1.2.0) (2025-10-25)
+
+### ✨ Features
+
+* fix argument error and add ability to get cave with specific id ([3de4cd7](https://github.com/pynickle/koishi-plugin-echo-cave/commit/3de4cd702f35097724d796ab4a36eebd9380320c))
+* support forward msg and save image to local ([f87c589](https://github.com/pynickle/koishi-plugin-echo-cave/commit/f87c589679098011f2ccd2158ebe76351ac9d1f1))
+
+### 🔧 Miscellaneous Changes
+
+* add no emit on error for ts config ([2cb1d29](https://github.com/pynickle/koishi-plugin-echo-cave/commit/2cb1d293847321ef81d289479093145429a27011))
+* use modified adapter onebot by myself to fix type error ([06226a5](https://github.com/pynickle/koishi-plugin-echo-cave/commit/06226a52f642573986c18f306377f822b2b3361e))
+
 ## [1.1.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.1.0...v1.1.1) (2025-10-25)
 
 ### 🐛 Bug Fixes
