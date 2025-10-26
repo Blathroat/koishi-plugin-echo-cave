@@ -64,9 +64,9 @@ export function apply(ctx: Context) {
         async ({ session }) => await addCave(ctx, session)
     );
 
-    ctx.command('cave.wipe <id:number>', '抹去特定 id 的回声洞信息', {
-        authority: 4,
-    }).action(async ({ session }, id) => await deleteCave(ctx, session, id));
+    ctx.command('cave.wipe <id:number>', '抹去特定 id 的回声洞信息').action(
+        async ({ session }, id) => await deleteCave(ctx, session, id)
+    );
 }
 
 async function getCave(ctx: Context, session: Session, id: number) {
@@ -110,6 +110,17 @@ async function deleteCave(ctx: Context, session: Session, id: number) {
 
     if (caves.length === 0) {
         return '🔍 未找到该 ID 的回声洞消息';
+    }
+
+    const caveMsg = caves[0];
+    const currentUserId = session.userId;
+
+    if (
+        currentUserId !== caveMsg.userId &&
+        currentUserId !== caveMsg.originUserId &&
+        (await session.getUser(currentUserId)).authority < 4
+    ) {
+        return '⛔ 您没有权限删除此消息！只有消息的存储者、原始发送者或管理员可以删除。';
     }
 
     await ctx.database.remove('echo_cave', id);
