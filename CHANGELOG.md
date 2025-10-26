@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.2.0...v1.3.0) (2025-10-26)
+
+### ✨ Features
+
+* add delete cave ([1d438f9](https://github.com/pynickle/koishi-plugin-echo-cave/commit/1d438f97f369ba5834cb4bf8f6c9dc79177535e5))
+
 ## [1.2.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.1.1...v1.2.0) (2025-10-25)
 
 ### ✨ Features
