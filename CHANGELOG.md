@@ -1,3 +1,13 @@
+## [1.3.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.3.0...v1.3.1) (2025-10-26)
+
+### 📚 Documentation
+
+* add readme and license ([44c5df7](https://github.com/pynickle/koishi-plugin-echo-cave/commit/44c5df7d6dfe57b1aad5b245795709ac412b0a93))
+
+### 🚀 Improvements
+
+* give user added this cave and send this cave msg the ability to delete the cave ([55acfb9](https://github.com/pynickle/koishi-plugin-echo-cave/commit/55acfb93364ee63a7aac39eb5a78dc6a7af8ace5))
+
 ## [1.3.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.2.0...v1.3.0) (2025-10-26)
 
 ### ✨ Features
