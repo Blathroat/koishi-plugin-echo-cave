@@ -63,6 +63,10 @@ export function apply(ctx: Context) {
     ctx.command('cave.echo', '将消息存入回声洞穴').action(
         async ({ session }) => await addCave(ctx, session)
     );
+
+    ctx.command('cave.wipe <id:number>', '抹去特定 id 的回声洞信息', {
+        authority: 4,
+    }).action(async ({ session }, id) => await deleteCave(ctx, session, id));
 }
 
 async function getCave(ctx: Context, session: Session, id: number) {
@@ -95,6 +99,21 @@ async function getCave(ctx: Context, session: Session, id: number) {
     }
 
     await sendCaveMsg(session, caveMsg);
+}
+
+async function deleteCave(ctx: Context, session: Session, id: number) {
+    if (!session.guildId) {
+        return '❌ 请在群聊中使用该命令！';
+    }
+
+    const caves = await ctx.database.get('echo_cave', id);
+
+    if (caves.length === 0) {
+        return '🔍 未找到该 ID 的回声洞消息';
+    }
+
+    await ctx.database.remove('echo_cave', id);
+    return `✅ 已成功抹去回声洞消息 ID：${id}`;
 }
 
 async function addCave(ctx: Context, session: Session) {
