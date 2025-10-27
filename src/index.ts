@@ -60,11 +60,11 @@ export function apply(ctx: Context) {
         '随机获取 / 获取特定 id 的回声洞信息'
     ).action(async ({ session }, id) => await getCave(ctx, session, id));
 
-    ctx.command('cave echo', '将消息存入回声洞穴').action(
+    ctx.command('cave.echo', '将消息存入回声洞穴').action(
         async ({ session }) => await addCave(ctx, session)
     );
 
-    ctx.command('cave wipe <id:number>', '抹去特定 id 的回声洞信息').action(
+    ctx.command('cave.wipe <id:number>', '抹去特定 id 的回声洞信息').action(
         async ({ session }, id) => await deleteCave(ctx, session, id)
     );
 }
