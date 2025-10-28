@@ -98,7 +98,7 @@ async function getCave(ctx: Context, session: Session, id: number) {
         caveMsg = caves[0];
     }
 
-    await sendCaveMsg(session, caveMsg);
+    await sendCaveMsg(ctx, session, caveMsg);
 }
 
 async function deleteCave(ctx: Context, session: Session, id: number) {
@@ -179,10 +179,12 @@ async function addCave(ctx: Context, session: Session) {
             session.channelId,
             `✅ 回声洞消息已成功存入，消息 ID：${result.id}`
         );
+        /*
         ctx.setTimeout(
             async () => await session.onebot.deleteMsg(messageId),
             5000
         );
+        */
     } catch (error) {
         this.ctx.logger.warn('上架商品失败:', error);
         return '❌ 上架商品失败，请稍后重试！';
