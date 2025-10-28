@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.3.3...v1.4.0) (2025-10-28)
+
+### ✨ Features
+
+* add echo cave msg prefix and suffix ([fab1ddc](https://github.com/pynickle/koishi-plugin-echo-cave/commit/fab1ddccbba85430f9fcff3961efb12efd627f7f))
+
 ## [1.3.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.3.2...v1.3.3) (2025-10-27)
 
 ## [1.3.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.3.1...v1.3.2) (2025-10-27)
