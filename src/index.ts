@@ -167,6 +167,10 @@ async function deleteCave(ctx: Context, session: Session, id: number) {
         return '❌ 请在群聊中使用该命令！';
     }
 
+    if (!id) {
+        return '❌ 请提供要删除的回声洞消息 ID！';
+    }
+
     const caves = await ctx.database.get('echo_cave', id);
 
     if (caves.length === 0) {
@@ -176,10 +180,8 @@ async function deleteCave(ctx: Context, session: Session, id: number) {
     const caveMsg = caves[0];
     const currentUserId = session.userId;
 
-    const user = await this.ctx.database.getUser(
-        session.platform,
-        currentUserId
-    );
+    const user = await ctx.database.getUser(session.platform, currentUserId);
+
     const userAuthority = user.authority;
 
     if (
