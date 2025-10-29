@@ -95,7 +95,7 @@ export async function sendCaveMsg(
         // 前缀与后缀
         content.unshift(createTextMsg(chosen.prefix));
         content.push(
-            createTextMsg(`${needsNewline ? '\n' : ''}${chosen.suffix}`)
+            createTextMsg(`${needsNewline ? '\n\n' : ''}${chosen.suffix}`)
         );
 
         await session.onebot.sendGroupMsg(channelId, content);
