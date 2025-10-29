@@ -4,7 +4,7 @@ import fs from 'fs';
 import { Context, Schema, Session } from 'koishi';
 import path from 'node:path';
 import { reconstructForwardMsg } from './forward-helper';
-import { sendCaveMsg } from './msg-helper';
+import { formatDate, sendCaveMsg } from './msg-helper';
 
 export const name = 'echo-cave';
 
@@ -60,13 +60,42 @@ export function apply(ctx: Context) {
         '随机获取 / 获取特定 id 的回声洞信息'
     ).action(async ({ session }, id) => await getCave(ctx, session, id));
 
-    ctx.command('cave.echo', '将消息存入回声洞穴').action(
+    ctx.command('cave.echo', '将消息存入回声洞').action(
         async ({ session }) => await addCave(ctx, session)
     );
 
     ctx.command('cave.wipe <id:number>', '抹去特定 id 的回声洞信息').action(
         async ({ session }, id) => await deleteCave(ctx, session, id)
     );
+
+    ctx.command('cave.listen', '获得由自己投稿的回声洞列表').action(
+        async ({ session }) => await getCaveListByUser(ctx, session)
+    );
+}
+
+async function getCaveListByUser(ctx: Context, session: Session) {
+    if (!session.guildId) {
+        return '❌ 请在群聊中使用该命令！';
+    }
+
+    const { userId, channelId } = session;
+
+    const caves = await ctx.database.get('echo_cave', {
+        userId,
+        channelId,
+    });
+
+    if (caves.length === 0) {
+        return '🚀 您在回声洞中暂无投稿，快使用 "cave.echo" 命令添加第一条消息吧！';
+    }
+
+    let response = `📜 您在本频道投稿的回声洞消息列表：\n`;
+
+    for (const cave of caves) {
+        response += `ID: ${cave.id} | 创建时间: ${formatDate(cave.createTime)}\n`;
+    }
+
+    return response;
 }
 
 async function getCave(ctx: Context, session: Session, id: number) {
