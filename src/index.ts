@@ -76,9 +76,9 @@ async function getCave(ctx: Context, session: Session, id: number) {
 
     let caveMsg: EchoCave;
 
-    if (!id) {
-        const { channelId } = session;
+    const { channelId } = session;
 
+    if (!id) {
         const caves = await ctx.database.get('echo_cave', {
             channelId,
         });
@@ -89,7 +89,10 @@ async function getCave(ctx: Context, session: Session, id: number) {
 
         caveMsg = caves[Math.floor(Math.random() * caves.length)];
     } else {
-        const caves = await ctx.database.get('echo_cave', id);
+        const caves = await ctx.database.get('echo_cave', {
+            id,
+            channelId,
+        });
 
         if (caves.length === 0) {
             return '🔍 未找到该 ID 的回声洞消息';
