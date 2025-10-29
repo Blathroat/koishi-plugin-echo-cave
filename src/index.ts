@@ -255,7 +255,6 @@ async function addCave(ctx: Context, session: Session) {
         );
         */
     } catch (error) {
-        this.ctx.logger.warn('上架商品失败:', error);
-        return '❌ 上架商品失败，请稍后重试！';
+        return '❌ 回声洞保存失败，请稍后重试！';
     }
 }
