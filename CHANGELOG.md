@@ -1,3 +1,9 @@
+## [1.6.4](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.3...v1.6.4) (2025-10-29)
+
+### 🐛 Bug Fixes
+
+* fix authority error ([6c591e1](https://github.com/pynickle/koishi-plugin-echo-cave/commit/6c591e102a693a1d40bb6f07550d14ee696117f7))
+
 ## [1.6.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.2...v1.6.3) (2025-10-29)
 
 ### 🐛 Bug Fixes
