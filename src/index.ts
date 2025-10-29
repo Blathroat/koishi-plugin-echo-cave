@@ -176,10 +176,16 @@ async function deleteCave(ctx: Context, session: Session, id: number) {
     const caveMsg = caves[0];
     const currentUserId = session.userId;
 
+    const user = await this.ctx.database.getUser(
+        session.platform,
+        currentUserId
+    );
+    const userAuthority = user.authority;
+
     if (
         currentUserId !== caveMsg.userId &&
         currentUserId !== caveMsg.originUserId &&
-        (await session.getUser(currentUserId)).authority < 4
+        userAuthority < 4
     ) {
         return '⛔ 您没有权限删除此消息！只有消息的存储者、原始发送者或管理员可以删除。';
     }
