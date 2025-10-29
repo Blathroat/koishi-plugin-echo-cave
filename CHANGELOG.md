@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.4.0...v1.4.1) (2025-10-29)
+
+### 🐛 Bug Fixes
+
+* fix get cave by specific id can obtain cave in other channels ([1595663](https://github.com/pynickle/koishi-plugin-echo-cave/commit/1595663a623afa8733995d16f688d3d733cc2a9d))
+
 ## [1.4.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.3.3...v1.4.0) (2025-10-28)
 
 ### ✨ Features
