@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.5.0...v1.6.0) (2025-10-29)
+
+### ✨ Features
+
+* add command to get cave spoken by current user ([2de6b23](https://github.com/pynickle/koishi-plugin-echo-cave/commit/2de6b23099bb448e55663a8a1648317e4283891b))
+
 ## [1.5.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.4.1...v1.5.0) (2025-10-29)
 
 ### ✨ Features
