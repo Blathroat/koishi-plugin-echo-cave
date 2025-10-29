@@ -1,3 +1,9 @@
+## [1.6.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.0...v1.6.1) (2025-10-29)
+
+### 🚀 Improvements
+
+* improve the display of cave msg ([69271ae](https://github.com/pynickle/koishi-plugin-echo-cave/commit/69271ae3e68da558e49a73bd0facda13f3824429))
+
 ## [1.6.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.5.0...v1.6.0) (2025-10-29)
 
 ### ✨ Features
