@@ -71,6 +71,10 @@ export function apply(ctx: Context) {
     ctx.command('cave.listen', '获得由自己投稿的回声洞列表').action(
         async ({ session }) => await getCaveListByUser(ctx, session)
     );
+
+    ctx.command('cave.trace', '获得自己发言的回声洞列表').action(
+        async ({ session }) => await getCaveListByOriginUser(ctx, session)
+    );
 }
 
 async function getCaveListByUser(ctx: Context, session: Session) {
@@ -90,6 +94,31 @@ async function getCaveListByUser(ctx: Context, session: Session) {
     }
 
     let response = `📜 您在本频道投稿的回声洞消息列表：\n`;
+
+    for (const cave of caves) {
+        response += `ID: ${cave.id} | 创建时间: ${formatDate(cave.createTime)}\n`;
+    }
+
+    return response;
+}
+
+async function getCaveListByOriginUser(ctx: Context, session: Session) {
+    if (!session.guildId) {
+        return '❌ 请在群聊中使用该命令！';
+    }
+
+    const { userId, channelId } = session;
+
+    const caves = await ctx.database.get('echo_cave', {
+        originUserId: userId,
+        channelId,
+    });
+
+    if (caves.length === 0) {
+        return '🚀 您在回声洞中暂无发言被投稿，快使用 "cave.echo" 命令添加第一条消息吧！';
+    }
+
+    let response = `📜 您在本频道发言的回声洞消息列表：\n`;
 
     for (const cave of caves) {
         response += `ID: ${cave.id} | 创建时间: ${formatDate(cave.createTime)}\n`;
