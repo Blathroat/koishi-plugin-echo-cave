@@ -1,3 +1,14 @@
+## [1.6.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.1...v1.6.2) (2025-10-29)
+
+### 🐛 Bug Fixes
+
+* add own adapter to dependencies (trigger release) ([c760f41](https://github.com/pynickle/koishi-plugin-echo-cave/commit/c760f4188dd5478db9a5bc544a5c13f7bc744401))
+* remove peer dependency of own adapter (trigger release) ([cf6037b](https://github.com/pynickle/koishi-plugin-echo-cave/commit/cf6037b32ee181446619eea903766cfebbd2f278))
+
+### 📚 Documentation
+
+* update document ([4b18285](https://github.com/pynickle/koishi-plugin-echo-cave/commit/4b182859cf1af85fd05956834ca403a9be2be14c))
+
 ## [1.6.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.0...v1.6.1) (2025-10-29)
 
 ### 🚀 Improvements
