@@ -23,7 +23,6 @@
     "cave"
   ],
   "peerDependencies": {
-    "@pynickle/koishi-plugin-adapter-onebot": "^1.0.0",
     "koishi": "^4.18.9"
   },
   "devDependencies": {
