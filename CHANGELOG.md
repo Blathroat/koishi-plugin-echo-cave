@@ -1,3 +1,9 @@
+## [1.7.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.5...v1.7.0) (2025-10-29)
+
+### ✨ Features
+
+* add admin message protection config ([4c606d4](https://github.com/pynickle/koishi-plugin-echo-cave/commit/4c606d48a43998a4e3747e7a5a9950e6a7fee59e))
+
 ## [1.6.5](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.4...v1.6.5) (2025-10-29)
 
 ### 🐛 Bug Fixes
