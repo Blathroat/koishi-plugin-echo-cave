@@ -10,9 +10,17 @@ export const name = 'echo-cave';
 
 export const inject = ['database'];
 
-export interface Config {}
+export interface Config {
+    adminMessageProtection?: boolean;
+}
 
-export const Config: Schema<Config> = Schema.object({});
+export const Config: Schema<Config> = Schema.object({
+    adminMessageProtection: Schema.boolean()
+        .description(
+            '开启管理员消息保护，开启后管理员发布的消息只能由管理员删除'
+        )
+        .default(false),
+});
 
 export interface EchoCave {
     id: number;
@@ -30,7 +38,7 @@ declare module 'koishi' {
     }
 }
 
-export function apply(ctx: Context) {
+export function apply(ctx: Context, cfg: Config) {
     const imgPath = path.join(ctx.baseDir, 'data', 'cave', 'images');
 
     if (!fs.existsSync(imgPath)) {
@@ -65,7 +73,7 @@ export function apply(ctx: Context) {
     );
 
     ctx.command('cave.wipe <id:number>', '抹去特定 id 的回声洞信息').action(
-        async ({ session }, id) => await deleteCave(ctx, session, id)
+        async ({ session }, id) => await deleteCave(ctx, session, cfg, id)
     );
 
     ctx.command('cave.listen', '获得由自己投稿的回声洞列表').action(
@@ -162,7 +170,12 @@ async function getCave(ctx: Context, session: Session, id: number) {
     await sendCaveMsg(ctx, session, caveMsg);
 }
 
-async function deleteCave(ctx: Context, session: Session, id: number) {
+async function deleteCave(
+    ctx: Context,
+    session: Session,
+    cfg: Config,
+    id: number
+) {
     if (!session.guildId) {
         return '❌ 请在群聊中使用该命令！';
     }
@@ -179,15 +192,26 @@ async function deleteCave(ctx: Context, session: Session, id: number) {
 
     const caveMsg = caves[0];
     const currentUserId = session.userId;
-
     const user = await ctx.database.getUser(session.platform, currentUserId);
-
     const userAuthority = user.authority;
+    const isCurrentUserAdmin = userAuthority >= 4;
+
+    if (cfg.adminMessageProtection) {
+        const caveUser = await ctx.database.getUser(
+            session.platform,
+            caveMsg.userId
+        );
+        const isCaveUserAdmin = caveUser.authority >= 4;
+
+        if (isCaveUserAdmin && !isCurrentUserAdmin) {
+            return '⛔ 该消息由管理员发布，已开启管理员消息保护，只有管理员可以删除。';
+        }
+    }
 
     if (
         currentUserId !== caveMsg.userId &&
         currentUserId !== caveMsg.originUserId &&
-        userAuthority < 4
+        !isCurrentUserAdmin
     ) {
         return '⛔ 您没有权限删除此消息！只有消息的存储者、原始发送者或管理员可以删除。';
     }
@@ -244,16 +268,7 @@ async function addCave(ctx: Context, session: Session) {
             content,
         });
 
-        const messageId = await session.onebot.sendGroupMsg(
-            session.channelId,
-            `✅ 回声洞消息已成功存入，消息 ID：${result.id}`
-        );
-        /*
-        ctx.setTimeout(
-            async () => await session.onebot.deleteMsg(messageId),
-            5000
-        );
-        */
+        return `✅ 回声洞消息已成功存入，消息 ID：${result.id}`;
     } catch (error) {
         return '❌ 回声洞保存失败，请稍后重试！';
     }
