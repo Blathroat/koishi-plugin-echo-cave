@@ -1,3 +1,9 @@
+## [1.7.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.0...v1.7.1) (2025-11-03)
+
+### 🐛 Bug Fixes
+
+* fix nickname can not be saved correctly in forward msg ([fc8042a](https://github.com/pynickle/koishi-plugin-echo-cave/commit/fc8042a07628aaa56594f7c6e4cb84820e9b7cc2))
+
 ## [1.7.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.6.5...v1.7.0) (2025-10-29)
 
 ### ✨ Features
