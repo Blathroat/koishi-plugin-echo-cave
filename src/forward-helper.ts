@@ -15,7 +15,7 @@ export async function reconstructForwardMsg(
                 type: 'node',
                 data: {
                     user_id: msg.sender.user_id,
-                    nick_name: msg.sender.nickname,
+                    nickname: msg.sender.nickname,
                     content,
                 },
             };
