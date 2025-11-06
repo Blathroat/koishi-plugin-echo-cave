@@ -1,3 +1,9 @@
+## [1.7.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.1...v1.7.2) (2025-11-06)
+
+### 🐛 Bug Fixes
+
+* support reply type message ([2291c34](https://github.com/pynickle/koishi-plugin-echo-cave/commit/2291c34643a5f153f405bcb8a301ee06142d6868))
+
 ## [1.7.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.0...v1.7.1) (2025-11-03)
 
 ### 🐛 Bug Fixes
