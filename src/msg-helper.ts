@@ -84,22 +84,33 @@ export async function sendCaveMsg(
         const chosen = random(forwardStyles);
         await session.onebot.sendGroupMsg(channelId, [createTextMsg(chosen)]);
         await session.onebot.sendGroupForwardMsg(channelId, content);
-    } else {
-        // 普通消息风格
-        const chosen = random(msgStyles);
 
-        // 判断最后一条消息类型
-        const last = content.at(-1);
-        const needsNewline = last?.type === 'text';
-
-        // 前缀与后缀
-        content.unshift(createTextMsg(chosen.prefix));
-        content.push(
-            createTextMsg(`${needsNewline ? '\n\n' : ''}${chosen.suffix}`)
-        );
-
+        return;
+    } else if (
+        caveMsg.type == 'msg' &&
+        content.some((m) => m.type === 'reply')
+    ) {
+        const chosen = random(forwardStyles);
+        await session.onebot.sendGroupMsg(channelId, [createTextMsg(chosen)]);
         await session.onebot.sendGroupMsg(channelId, content);
+
+        return;
     }
+
+    // 普通消息风格
+    const chosen = random(msgStyles);
+
+    // 判断最后一条消息类型
+    const last = content.at(-1);
+    const needsNewline = last?.type === 'text';
+
+    // 前缀与后缀
+    content.unshift(createTextMsg(chosen.prefix));
+    content.push(
+        createTextMsg(`${needsNewline ? '\n\n' : ''}${chosen.suffix}`)
+    );
+
+    await session.onebot.sendGroupMsg(channelId, content);
 }
 
 export function formatDate(date: Date): string {
