@@ -1,3 +1,10 @@
+## [1.7.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.2...v1.7.3) (2025-11-29)
+
+### 🔧 Miscellaneous Changes
+
+* add missing dependencies ([a1827a8](https://github.com/pynickle/koishi-plugin-echo-cave/commit/a1827a8bc63dec455de4d81da139881eef014c9c))
+* update dependencies and change to pnpm ([dac7a08](https://github.com/pynickle/koishi-plugin-echo-cave/commit/dac7a085aecf4136367e26ba216557a24632d15e))
+
 ## [1.7.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.1...v1.7.2) (2025-11-06)
 
 ### 🐛 Bug Fixes
