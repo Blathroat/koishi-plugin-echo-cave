@@ -1,15 +1,12 @@
-﻿import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
+import { saveImages } from './image-helper';
+import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import { Message } from '@pynickle/koishi-plugin-adapter-onebot/lib/types';
 import { Context } from 'koishi';
-import { saveImages } from './image-helper';
 
-export async function reconstructForwardMsg(
-    ctx: Context,
-    message: Message[]
-): Promise<CQCode[]> {
+export async function reconstructForwardMsg(ctx: Context, message: Message[]): Promise<CQCode[]> {
     return Promise.all(
         message.map(async (msg: Message) => {
-            const content = await processMessageContent(ctx, msg);
+            const content = await processForwardMessageContent(ctx, msg);
 
             return {
                 type: 'node',
@@ -23,7 +20,7 @@ export async function reconstructForwardMsg(
     );
 }
 
-async function processMessageContent(
+async function processForwardMessageContent(
     ctx: Context,
     msg: Message
 ): Promise<string | CQCode[]> {

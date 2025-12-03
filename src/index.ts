@@ -1,10 +1,11 @@
 import '@pynickle/koishi-plugin-adapter-onebot';
+import { formatDate, sendCaveMsg } from './cave-helper';
+import { reconstructForwardMsg } from './forward-helper';
+import { processMessageContent } from './msg-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import fs from 'fs';
 import { Context, Schema, Session } from 'koishi';
 import path from 'node:path';
-import { reconstructForwardMsg } from './forward-helper';
-import { formatDate, sendCaveMsg } from './msg-helper';
 
 export const name = 'echo-cave';
 
@@ -16,9 +17,7 @@ export interface Config {
 
 export const Config: Schema<Config> = Schema.object({
     adminMessageProtection: Schema.boolean()
-        .description(
-            '开启管理员消息保护，开启后管理员发布的消息只能由管理员删除'
-        )
+        .description('开启管理员消息保护，开启后管理员发布的消息只能由管理员删除')
         .default(false),
 });
 
@@ -63,10 +62,9 @@ export function apply(ctx: Context, cfg: Config) {
         }
     );
 
-    ctx.command(
-        'cave [id:number]',
-        '随机获取 / 获取特定 id 的回声洞信息'
-    ).action(async ({ session }, id) => await getCave(ctx, session, id));
+    ctx.command('cave [id:number]', '随机获取 / 获取特定 id 的回声洞信息').action(
+        async ({ session }, id) => await getCave(ctx, session, id)
+    );
 
     ctx.command('cave.echo', '将消息存入回声洞').action(
         async ({ session }) => await addCave(ctx, session)
@@ -170,12 +168,7 @@ async function getCave(ctx: Context, session: Session, id: number) {
     await sendCaveMsg(ctx, session, caveMsg);
 }
 
-async function deleteCave(
-    ctx: Context,
-    session: Session,
-    cfg: Config,
-    id: number
-) {
+async function deleteCave(ctx: Context, session: Session, cfg: Config, id: number) {
     if (!session.guildId) {
         return '❌ 请在群聊中使用该命令！';
     }
@@ -197,10 +190,7 @@ async function deleteCave(
     const isCurrentUserAdmin = userAuthority >= 4;
 
     if (cfg.adminMessageProtection) {
-        const caveUser = await ctx.database.getUser(
-            session.platform,
-            caveMsg.userId
-        );
+        const caveUser = await ctx.database.getUser(session.platform, caveMsg.userId);
         const isCaveUserAdmin = caveUser.authority >= 4;
 
         if (isCaveUserAdmin && !isCurrentUserAdmin) {
@@ -247,9 +237,19 @@ async function addCave(ctx: Context, session: Session) {
     } else {
         type = 'msg';
 
-        content = JSON.stringify(
-            (await session.onebot.getMsg(messageId)).message
-        );
+        const message = (await session.onebot.getMsg(messageId)).message;
+
+        let msgJson: CQCode[];
+
+        if (typeof message === 'string') {
+            msgJson = CQCode.parse(message);
+        } else {
+            msgJson = message;
+        }
+
+        content = JSON.stringify(await processMessageContent(ctx, msgJson));
+
+        ctx.logger.info(content);
     }
 
     await ctx.database.get('echo_cave', { content }).then((existing) => {
