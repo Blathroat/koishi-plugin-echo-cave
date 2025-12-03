@@ -1,3 +1,9 @@
+## [1.7.5](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.4...v1.7.5) (2025-12-03)
+
+### 🔧 Miscellaneous Changes
+
+* add missing dependency for esbuild ([7b0e14a](https://github.com/pynickle/koishi-plugin-echo-cave/commit/7b0e14a804b2d138cf433870433ecc43abb5ad37))
+
 ## [1.7.4](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.3...v1.7.4) (2025-12-03)
 
 ### 🐛 Bug Fixes
