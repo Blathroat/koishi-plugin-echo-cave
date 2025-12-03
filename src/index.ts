@@ -248,8 +248,6 @@ async function addCave(ctx: Context, session: Session) {
         }
 
         content = JSON.stringify(await processMessageContent(ctx, msgJson));
-
-        ctx.logger.info(content);
     }
 
     await ctx.database.get('echo_cave', { content }).then((existing) => {
