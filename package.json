@@ -11,8 +11,9 @@
   ],
   "license": "MIT",
   "scripts": {
-    "lint": "eslint ./src --ext .ts",
-    "lint:fix": "eslint ./src --ext .ts --fix",
+    "lint": "npx oxlint ./src",
+    "lint:fix": "npx oxlint ./src --fix",
+    "fmt": "npx oxfmt ./src",
     "build": "node esbuild.config.js && tsc --emitDeclarationOnly",
     "release": "semantic-release"
   },
@@ -34,17 +35,13 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^13.1.2",
     "@semantic-release/release-notes-generator": "^14.1.0",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.0",
     "@types/node": "^24.10.1",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "esbuild": "^0.27.0",
     "esbuild-plugin-yaml": "^0.0.1",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
-    "prettier": "^3.7.2",
+    "oxfmt": "^0.16.0",
+    "oxlint": "^1.31.0",
     "semantic-release": "^25.0.2",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "typescript": "^5.9.3"
   }
 }
