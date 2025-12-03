@@ -1,3 +1,18 @@
+## [1.7.4](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.3...v1.7.4) (2025-12-03)
+
+### 🐛 Bug Fixes
+
+* Fixed an issue where image saving did not take effect for non-merged forwarded messages. ([f72c538](https://github.com/pynickle/koishi-plugin-echo-cave/commit/f72c538907e7f0a6d99085361cc392668b95b9fd))
+
+### 💄 Style Improvements
+
+* remove some debug code ([5419e44](https://github.com/pynickle/koishi-plugin-echo-cave/commit/5419e4405db270f36c0da261784b998df8f43646))
+
+### 🔧 Miscellaneous Changes
+
+* add missing dependency ([dfb2905](https://github.com/pynickle/koishi-plugin-echo-cave/commit/dfb2905807a07e99a0ed7ff7ab1cb0b20f2c6f3f))
+* use oxfmt and oxlint instead of eslint and prettier ([78262bd](https://github.com/pynickle/koishi-plugin-echo-cave/commit/78262bd76665fd3b2d34f396d6fd4c61184d654b))
+
 ## [1.7.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.2...v1.7.3) (2025-11-29)
 
 ### 🔧 Miscellaneous Changes
