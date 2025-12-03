@@ -1,3 +1,9 @@
+## [1.8.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.5...v1.8.0) (2025-12-03)
+
+### ✨ Features
+
+* provide locale for some messages first ([edc93f3](https://github.com/pynickle/koishi-plugin-echo-cave/commit/edc93f3e5317bf0f320d88dbab683eca8aa9cb4a))
+
 ## [1.7.5](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.4...v1.7.5) (2025-12-03)
 
 ### 🔧 Miscellaneous Changes
