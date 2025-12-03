@@ -27,7 +27,8 @@
     "koishi": "^4.18.9"
   },
   "dependencies": {
-    "@pynickle/koishi-plugin-adapter-onebot": "^1.0.0"
+    "@pynickle/koishi-plugin-adapter-onebot": "^1.0.0",
+    "axios": "^1.13.2"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
