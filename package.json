@@ -23,6 +23,11 @@
     "plugin",
     "cave"
   ],
+  "koishi": {
+    "locales": [
+      "zh"
+    ]
+  },
   "peerDependencies": {
     "koishi": "^4.18.9"
   },

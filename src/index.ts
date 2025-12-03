@@ -16,9 +16,9 @@ export interface Config {
 }
 
 export const Config: Schema<Config> = Schema.object({
-    adminMessageProtection: Schema.boolean()
-        .description('开启管理员消息保护，开启后管理员发布的消息只能由管理员删除')
-        .default(false),
+    adminMessageProtection: Schema.boolean().default(false),
+}).i18n({
+    'zh-CN': require('./locales/zh-CN.json').config,
 });
 
 export interface EchoCave {
@@ -38,6 +38,8 @@ declare module 'koishi' {
 }
 
 export function apply(ctx: Context, cfg: Config) {
+    ctx.i18n.define('zh-CN', require('./locales/zh-CN.json'));
+
     const imgPath = path.join(ctx.baseDir, 'data', 'cave', 'images');
 
     if (!fs.existsSync(imgPath)) {
@@ -62,15 +64,13 @@ export function apply(ctx: Context, cfg: Config) {
         }
     );
 
-    ctx.command('cave [id:number]', '随机获取 / 获取特定 id 的回声洞信息').action(
+    ctx.command('cave [id:number]').action(
         async ({ session }, id) => await getCave(ctx, session, id)
     );
 
-    ctx.command('cave.echo', '将消息存入回声洞').action(
-        async ({ session }) => await addCave(ctx, session)
-    );
+    ctx.command('cave.echo').action(async ({ session }) => await addCave(ctx, session));
 
-    ctx.command('cave.wipe <id:number>', '抹去特定 id 的回声洞信息').action(
+    ctx.command('cave.wipe <id:number>').action(
         async ({ session }, id) => await deleteCave(ctx, session, cfg, id)
     );
 
@@ -85,7 +85,7 @@ export function apply(ctx: Context, cfg: Config) {
 
 async function getCaveListByUser(ctx: Context, session: Session) {
     if (!session.guildId) {
-        return '❌ 请在群聊中使用该命令！';
+        return session.text('general.privateChatReminder');
     }
 
     const { userId, channelId } = session;
@@ -110,7 +110,7 @@ async function getCaveListByUser(ctx: Context, session: Session) {
 
 async function getCaveListByOriginUser(ctx: Context, session: Session) {
     if (!session.guildId) {
-        return '❌ 请在群聊中使用该命令！';
+        return session.text('general.privateChatReminder');
     }
 
     const { userId, channelId } = session;
@@ -135,7 +135,7 @@ async function getCaveListByOriginUser(ctx: Context, session: Session) {
 
 async function getCave(ctx: Context, session: Session, id: number) {
     if (!session.guildId) {
-        return '❌ 请在群聊中使用该命令！';
+        return session.text('general.privateChatReminder');
     }
 
     let caveMsg: EchoCave;
@@ -148,7 +148,7 @@ async function getCave(ctx: Context, session: Session, id: number) {
         });
 
         if (caves.length === 0) {
-            return '🚀 回声洞中暂无消息，快使用 "cave.echo" 命令添加第一条消息吧！';
+            return session.text('.noMsgInCave');
         }
 
         caveMsg = caves[Math.floor(Math.random() * caves.length)];
@@ -159,7 +159,7 @@ async function getCave(ctx: Context, session: Session, id: number) {
         });
 
         if (caves.length === 0) {
-            return '🔍 未找到该 ID 的回声洞消息';
+            return session.text('general.noMsgWithId');
         }
 
         caveMsg = caves[0];
@@ -170,17 +170,17 @@ async function getCave(ctx: Context, session: Session, id: number) {
 
 async function deleteCave(ctx: Context, session: Session, cfg: Config, id: number) {
     if (!session.guildId) {
-        return '❌ 请在群聊中使用该命令！';
+        return session.text('general.privateChatReminder');
     }
 
     if (!id) {
-        return '❌ 请提供要删除的回声洞消息 ID！';
+        return session.text('.noIdProvided');
     }
 
     const caves = await ctx.database.get('echo_cave', id);
 
     if (caves.length === 0) {
-        return '🔍 未找到该 ID 的回声洞消息';
+        return session.text('general.noMsgWithId');
     }
 
     const caveMsg = caves[0];
@@ -194,7 +194,7 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
         const isCaveUserAdmin = caveUser.authority >= 4;
 
         if (isCaveUserAdmin && !isCurrentUserAdmin) {
-            return '⛔ 该消息由管理员发布，已开启管理员消息保护，只有管理员可以删除。';
+            return session.text('.adminOnly');
         }
     }
 
@@ -203,20 +203,20 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
         currentUserId !== caveMsg.originUserId &&
         !isCurrentUserAdmin
     ) {
-        return '⛔ 您没有权限删除此消息！只有消息的存储者、原始发送者或管理员可以删除。';
+        return session.text('.permissionDenied');
     }
 
     await ctx.database.remove('echo_cave', id);
-    return `✅ 已成功抹去回声洞消息 ID：${id}`;
+    return session.text('.msgDeleted', [id]);
 }
 
 async function addCave(ctx: Context, session: Session) {
     if (!session.guildId) {
-        return '❌ 请在群聊中使用该命令！';
+        return session.text('general.privateChatReminder');
     }
 
     if (!session.quote) {
-        return '💡 请引用一条消息后再使用此命令！';
+        return session.text('.noMsgQuoted');
     }
 
     const { userId, channelId, quote } = session;
@@ -252,7 +252,7 @@ async function addCave(ctx: Context, session: Session) {
 
     await ctx.database.get('echo_cave', { content }).then((existing) => {
         if (existing) {
-            return '♻️ 该消息已存在于回声洞穴中！';
+            return session.text('.existingMsg');
         }
     });
 
@@ -266,8 +266,8 @@ async function addCave(ctx: Context, session: Session) {
             content,
         });
 
-        return `✅ 回声洞消息已成功存入，消息 ID：${result.id}`;
+        return session.text('.msgSaved', [result.id]);
     } catch (error) {
-        return '❌ 回声洞保存失败，请稍后重试！';
+        return session.text('.msgFailedToSave');
     }
 }

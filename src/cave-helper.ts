@@ -1,7 +1,7 @@
 import { createTextMsg } from './cqcode-helper';
 import { EchoCave } from './index';
 import { getUserName } from './onebot-helper';
-﻿import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
+import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import { Context, Session } from 'koishi';
 
 export async function sendCaveMsg(
