@@ -249,6 +249,7 @@ async function addCave(ctx: Context, session: Session, cfg: Config) {
 
         const message = await reconstructForwardMsg(
             ctx,
+            session,
             await session.onebot.getForwardMsg(messageId),
             cfg
         );
