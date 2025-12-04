@@ -1,3 +1,9 @@
+## [1.10.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.1...v1.10.2) (2025-12-04)
+
+### 🐛 Bug Fixes
+
+* fix wrong session text element ([7a092b6](https://github.com/pynickle/koishi-plugin-echo-cave/commit/7a092b651c9545fb2e1a40a80e15f14492e6726f))
+
 ## [1.10.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.0...v1.10.1) (2025-12-04)
 
 ### 🐛 Bug Fixes
