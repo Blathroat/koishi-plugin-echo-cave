@@ -87,7 +87,7 @@ export function apply(ctx: Context, cfg: Config) {
 
 async function getCaveListByUser(ctx: Context, session: Session) {
     if (!session.guildId) {
-        return session.text('general.privateChatReminder');
+        return session.text('echo-cave.general.privateChatReminder');
     }
 
     const { userId, channelId } = session;
@@ -112,7 +112,7 @@ async function getCaveListByUser(ctx: Context, session: Session) {
 
 async function getCaveListByOriginUser(ctx: Context, session: Session) {
     if (!session.guildId) {
-        return session.text('general.privateChatReminder');
+        return session.text('echo-cave.general.privateChatReminder');
     }
 
     const { userId, channelId } = session;
@@ -137,7 +137,7 @@ async function getCaveListByOriginUser(ctx: Context, session: Session) {
 
 async function getCave(ctx: Context, session: Session, id: number) {
     if (!session.guildId) {
-        return session.text('general.privateChatReminder');
+        return session.text('echo-cave.general.privateChatReminder');
     }
 
     let caveMsg: EchoCave;
@@ -161,7 +161,7 @@ async function getCave(ctx: Context, session: Session, id: number) {
         });
 
         if (caves.length === 0) {
-            return session.text('general.noMsgWithId');
+            return session.text('echo-cave.general.noMsgWithId');
         }
 
         caveMsg = caves[0];
@@ -172,7 +172,7 @@ async function getCave(ctx: Context, session: Session, id: number) {
 
 async function deleteCave(ctx: Context, session: Session, cfg: Config, id: number) {
     if (!session.guildId) {
-        return session.text('general.privateChatReminder');
+        return session.text('echo-cave.general.privateChatReminder');
     }
 
     if (!id) {
@@ -182,7 +182,7 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
     const caves = await ctx.database.get('echo_cave', id);
 
     if (caves.length === 0) {
-        return session.text('general.noMsgWithId');
+        return session.text('echo-cave.general.noMsgWithId');
     }
 
     const caveMsg = caves[0];
@@ -224,7 +224,7 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
 
 async function addCave(ctx: Context, session: Session) {
     if (!session.guildId) {
-        return session.text('general.privateChatReminder');
+        return session.text('echo-cave.general.privateChatReminder');
     }
 
     if (!session.quote) {
