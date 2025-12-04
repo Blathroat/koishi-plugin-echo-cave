@@ -1,3 +1,9 @@
+## [1.9.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.9.0...v1.9.1) (2025-12-04)
+
+### 🐛 Bug Fixes
+
+* remove the error reply component in messages ([9410c51](https://github.com/pynickle/koishi-plugin-echo-cave/commit/9410c515622f28f40caf875cfcd3ebb170ed8520))
+
 ## [1.9.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.8.0...v1.9.0) (2025-12-04)
 
 ### ✨ Features
