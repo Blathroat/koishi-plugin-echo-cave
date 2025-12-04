@@ -1,3 +1,9 @@
+## [1.9.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.8.0...v1.9.0) (2025-12-04)
+
+### ✨ Features
+
+* add contributor and sender deletion config ([f2f4ca6](https://github.com/pynickle/koishi-plugin-echo-cave/commit/f2f4ca6eb39de4c00572e86702efc9a4ef7aa7ba))
+
 ## [1.8.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.7.5...v1.8.0) (2025-12-03)
 
 ### ✨ Features
