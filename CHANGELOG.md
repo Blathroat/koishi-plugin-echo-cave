@@ -1,3 +1,9 @@
+## [1.12.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.11.0...v1.12.0) (2025-12-04)
+
+### ✨ Features
+
+* add config for size limit ([645d43a](https://github.com/pynickle/koishi-plugin-echo-cave/commit/645d43aaa82fda882749f8d73bc37866416299f8))
+
 ## [1.11.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.4...v1.11.0) (2025-12-04)
 
 ### ✨ Features
