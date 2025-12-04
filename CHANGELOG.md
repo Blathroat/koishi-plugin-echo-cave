@@ -1,3 +1,9 @@
+## [1.10.4](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.3...v1.10.4) (2025-12-04)
+
+### 🚀 Improvements
+
+* add nl for newline in template ([2f77a9c](https://github.com/pynickle/koishi-plugin-echo-cave/commit/2f77a9c2321834a19181644927adfe7f6bdcd475))
+
 ## [1.10.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.2...v1.10.3) (2025-12-04)
 
 ### 🚀 Improvements
