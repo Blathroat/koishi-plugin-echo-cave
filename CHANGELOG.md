@@ -1,3 +1,9 @@
+## [1.9.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.9.1...v1.9.2) (2025-12-04)
+
+### 🚀 Improvements
+
+* add more localization ([f78b676](https://github.com/pynickle/koishi-plugin-echo-cave/commit/f78b676e5ea6b4524c4cad000ce7d0a00c657fbc))
+
 ## [1.9.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.9.0...v1.9.1) (2025-12-04)
 
 ### 🐛 Bug Fixes
