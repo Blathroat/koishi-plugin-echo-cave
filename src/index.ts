@@ -22,7 +22,7 @@ export const Config: Schema<Config> = Schema.object({
     allowContributorDelete: Schema.boolean().default(true),
     allowSenderDelete: Schema.boolean().default(true),
 }).i18n({
-    'zh-CN': require('./locales/zh-CN.json').config,
+    'zh-CN': require('./locales/zh-CN.json')._config,
 });
 
 export interface EchoCave {
