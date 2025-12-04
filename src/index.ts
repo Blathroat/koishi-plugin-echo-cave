@@ -64,7 +64,6 @@ export function apply(ctx: Context, cfg: Config) {
         {
             primary: 'id',
             autoInc: true,
-            unique: ['content'],
         }
     );
 
