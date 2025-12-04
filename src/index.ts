@@ -78,9 +78,7 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }, id) => await deleteCave(ctx, session, cfg, id)
     );
 
-    ctx.command('cave.listen', '获得由自己投稿的回声洞列表').action(
-        async ({ session }) => await getCaveListByUser(ctx, session)
-    );
+    ctx.command('cave.listen').action(async ({ session }) => await getCaveListByUser(ctx, session));
 
     ctx.command('cave.trace', '获得自己发言的回声洞列表').action(
         async ({ session }) => await getCaveListByOriginUser(ctx, session)
@@ -100,7 +98,7 @@ async function getCaveListByUser(ctx: Context, session: Session) {
     });
 
     if (caves.length === 0) {
-        return '🚀 您在回声洞中暂无投稿，快使用 "cave.echo" 命令添加第一条消息吧！';
+        return session.text('.noMsgContributed');
     }
 
     let response = `📜 您在本频道投稿的回声洞消息列表：\n`;

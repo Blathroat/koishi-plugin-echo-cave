@@ -34,6 +34,12 @@
         "senderDeleteDenied": "⛔ 您没有权限删除此消息！当前配置不允许原始发送者删除回声洞。",
         "msgDeleted": "✅ 已成功抹去回声洞消息 ID：{0}"
       }
+    },
+    "cave.listen": {
+      "description": "获得由自己投稿的回声洞列表",
+      "messages": {
+        "noMsgContributed": "🚀 您在回声洞中暂无投稿，快使用 \"cave.echo\" 命令添加第一条消息吧！"
+      }
     }
   }
 }
