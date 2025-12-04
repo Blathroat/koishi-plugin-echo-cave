@@ -1,3 +1,9 @@
+## [1.10.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.0...v1.10.1) (2025-12-04)
+
+### 🐛 Bug Fixes
+
+* fix localization template not working ([18f2a2c](https://github.com/pynickle/koishi-plugin-echo-cave/commit/18f2a2c84dcca626a135af0c6ae9461ce78d6a09))
+
 ## [1.10.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.9.2...v1.10.0) (2025-12-04)
 
 ### ✨ Features
