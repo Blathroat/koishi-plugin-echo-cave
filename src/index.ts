@@ -15,12 +15,20 @@ export interface Config {
     adminMessageProtection?: boolean;
     allowContributorDelete?: boolean;
     allowSenderDelete?: boolean;
+    enableSizeLimit?: boolean;
+    maxImageSize?: number;
+    maxVideoSize?: number;
+    maxFileSize?: number;
 }
 
 export const Config: Schema<Config> = Schema.object({
     adminMessageProtection: Schema.boolean().default(false),
     allowContributorDelete: Schema.boolean().default(true),
     allowSenderDelete: Schema.boolean().default(true),
+    enableSizeLimit: Schema.boolean().default(false),
+    maxImageSize: Schema.number().default(2048),
+    maxVideoSize: Schema.number().default(512),
+    maxFileSize: Schema.number().default(512),
 }).i18n({
     'zh-CN': require('./locales/zh-CN.json')._config,
 });
@@ -71,7 +79,7 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }, id) => await getCave(ctx, session, id)
     );
 
-    ctx.command('cave.echo').action(async ({ session }) => await addCave(ctx, session));
+    ctx.command('cave.echo').action(async ({ session }) => await addCave(ctx, session, cfg));
 
     ctx.command('cave.wipe <id:number>').action(
         async ({ session }, id) => await deleteCave(ctx, session, cfg, id)
@@ -221,7 +229,7 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
     return session.text('.msgDeleted', [id]);
 }
 
-async function addCave(ctx: Context, session: Session) {
+async function addCave(ctx: Context, session: Session, cfg: Config) {
     if (!session.guildId) {
         return session.text('echo-cave.general.privateChatReminder');
     }
@@ -241,7 +249,8 @@ async function addCave(ctx: Context, session: Session) {
 
         const message = await reconstructForwardMsg(
             ctx,
-            await session.onebot.getForwardMsg(messageId)
+            await session.onebot.getForwardMsg(messageId),
+            cfg
         );
 
         content = JSON.stringify(message);
@@ -261,7 +270,7 @@ async function addCave(ctx: Context, session: Session) {
             msgJson = message;
         }
 
-        content = JSON.stringify(await processMessageContent(ctx, msgJson));
+        content = JSON.stringify(await processMessageContent(ctx, msgJson, cfg));
     }
 
     await ctx.database.get('echo_cave', { content }).then((existing) => {

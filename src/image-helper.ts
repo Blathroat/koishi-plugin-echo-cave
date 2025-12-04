@@ -1,3 +1,4 @@
+import { Config } from './index';
 import axios from 'axios';
 import { Context } from 'koishi';
 import { promises as fs } from 'node:fs';
@@ -6,7 +7,8 @@ import path from 'node:path';
 export async function saveMedia(
     ctx: Context,
     mediaElement: Record<string, any>,
-    type: 'image' | 'video' | 'file'
+    type: 'image' | 'video' | 'file',
+    cfg: Config
 ) {
     const mediaUrl: string = mediaElement.url;
     const originalMediaName: string = mediaElement.file;
@@ -67,6 +69,10 @@ export async function saveMedia(
         ctx.logger.info(
             `${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully: ${fullMediaPath}`
         );
+
+        // 保存完成后检查并清理媒体文件
+        await checkAndCleanMediaFiles(ctx, cfg, type);
+
         return fullMediaPath;
     } catch (err) {
         ctx.logger.error(`Failed to save ${type}: ${err}`);
@@ -74,15 +80,107 @@ export async function saveMedia(
     }
 }
 
-export async function processMediaElement(ctx: Context, element: any) {
+export async function processMediaElement(ctx: Context, element: any, cfg: Config) {
     if (element.type === 'image' || element.type === 'video' || element.type === 'file') {
         return {
             ...element,
             data: {
                 ...element.data,
-                url: await saveMedia(ctx, element.data, element.type as 'image' | 'video' | 'file'),
+                url: await saveMedia(
+                    ctx,
+                    element.data,
+                    element.type as 'image' | 'video' | 'file',
+                    cfg
+                ),
             },
         };
     }
     return element;
+}
+
+// 检查并清理媒体文件，确保不超过配置的大小限制
+export async function checkAndCleanMediaFiles(
+    ctx: Context,
+    cfg: Config,
+    type: 'image' | 'video' | 'file'
+) {
+    // 如果未启用大小限制，直接返回
+    if (!cfg.enableSizeLimit) {
+        return;
+    }
+
+    const mediaDir = path.join(ctx.baseDir, 'data', 'cave', type + 's');
+    const maxSize = (() => {
+        switch (type) {
+            case 'image':
+                return (cfg.maxImageSize || 100) * 1024 * 1024; // 转换为字节
+            case 'video':
+                return (cfg.maxVideoSize || 500) * 1024 * 1024;
+            case 'file':
+                return (cfg.maxFileSize || 1000) * 1024 * 1024;
+        }
+    })();
+
+    try {
+        // 获取目录中的所有文件
+        const files = await fs.readdir(mediaDir);
+        if (files.length === 0) {
+            return;
+        }
+
+        // 获取文件信息（路径、大小、创建时间）
+        const fileInfos = await Promise.all(
+            files.map(async (file) => {
+                const filePath = path.join(mediaDir, file);
+                const stats = await fs.stat(filePath);
+                return {
+                    path: filePath,
+                    size: stats.size,
+                    mtime: stats.mtimeMs,
+                };
+            })
+        );
+
+        // 计算总大小
+        const totalSize = fileInfos.reduce((sum, file) => sum + file.size, 0);
+        ctx.logger.info(
+            `${type} directory total size: ${(totalSize / (1024 * 1024)).toFixed(2)} MB, max allowed: ${(maxSize / (1024 * 1024)).toFixed(2)} MB`
+        );
+
+        // 如果总大小超过限制，删除最早的文件
+        if (totalSize > maxSize) {
+            ctx.logger.warn(
+                `${type} directory size exceeds limit! Total: ${(totalSize / (1024 * 1024)).toFixed(2)} MB, Max: ${(maxSize / (1024 * 1024)).toFixed(2)} MB`
+            );
+
+            // 按修改时间排序，最早的文件排在前面
+            fileInfos.sort((a, b) => a.mtime - b.mtime);
+
+            let currentSize = totalSize;
+            let filesToDelete = [];
+
+            // 计算需要删除的文件
+            for (const file of fileInfos) {
+                if (currentSize <= maxSize) {
+                    break;
+                }
+                filesToDelete.push(file);
+                currentSize -= file.size;
+            }
+
+            // 删除文件
+            for (const file of filesToDelete) {
+                await fs.unlink(file.path);
+                ctx.logger.info(
+                    `Deleted oldest ${type} file: ${path.basename(file.path)} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`
+                );
+            }
+
+            ctx.logger.info(
+                `Cleanup completed. ${type} directory new size: ${(currentSize / (1024 * 1024)).toFixed(2)} MB`
+            );
+        }
+    } catch (err) {
+        ctx.logger.error(`Failed to check and clean ${type} files: ${err}`);
+    }
 }

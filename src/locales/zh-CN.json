@@ -2,7 +2,11 @@
   "_config": {
     "adminMessageProtection": "开启管理员消息保护，开启后管理员发布的消息只能由管理员删除",
     "allowContributorDelete": "允许投稿者删除自己投稿的回声洞",
-    "allowSenderDelete": "允许原始发送者删除被投稿的回声洞"
+    "allowSenderDelete": "允许原始发送者删除被投稿的回声洞",
+    "enableSizeLimit": "是否启用媒体文件大小限制",
+    "maxImageSize": "最大图片大小 (MB)",
+    "maxVideoSize": "最大视频大小 (MB)",
+    "maxFileSize": "最大文件大小 (MB)"
   },
   "echo-cave": {
     "general": {
