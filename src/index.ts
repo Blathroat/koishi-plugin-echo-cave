@@ -80,7 +80,7 @@ export function apply(ctx: Context, cfg: Config) {
 
     ctx.command('cave.listen').action(async ({ session }) => await getCaveListByUser(ctx, session));
 
-    ctx.command('cave.trace', '获得自己发言的回声洞列表').action(
+    ctx.command('cave.trace').action(
         async ({ session }) => await getCaveListByOriginUser(ctx, session)
     );
 }
@@ -101,10 +101,10 @@ async function getCaveListByUser(ctx: Context, session: Session) {
         return session.text('.noMsgContributed');
     }
 
-    let response = `📜 您在本频道投稿的回声洞消息列表：\n`;
+    let response = session.text('.msgListHeader');
 
     for (const cave of caves) {
-        response += `ID: ${cave.id} | 创建时间: ${formatDate(cave.createTime)}\n`;
+        response += session.text('.msgListItem', [cave.id, formatDate(cave.createTime)]);
     }
 
     return response;
@@ -123,13 +123,13 @@ async function getCaveListByOriginUser(ctx: Context, session: Session) {
     });
 
     if (caves.length === 0) {
-        return '🚀 您在回声洞中暂无发言被投稿，快使用 "cave.echo" 命令添加第一条消息吧！';
+        return session.text('.noMsgTraced');
     }
 
-    let response = `📜 您在本频道发言的回声洞消息列表：\n`;
+    let response = session.text('.msgListHeader');
 
     for (const cave of caves) {
-        response += `ID: ${cave.id} | 创建时间: ${formatDate(cave.createTime)}\n`;
+        response += session.text('.msgListItem', [cave.id, formatDate(cave.createTime)]);
     }
 
     return response;
