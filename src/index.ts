@@ -13,10 +13,14 @@ export const inject = ['database'];
 
 export interface Config {
     adminMessageProtection?: boolean;
+    allowContributorDelete?: boolean;
+    allowSenderDelete?: boolean;
 }
 
 export const Config: Schema<Config> = Schema.object({
     adminMessageProtection: Schema.boolean().default(false),
+    allowContributorDelete: Schema.boolean().default(true),
+    allowSenderDelete: Schema.boolean().default(true),
 }).i18n({
     'zh-CN': require('./locales/zh-CN.json').config,
 });
@@ -198,12 +202,22 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
         }
     }
 
-    if (
-        currentUserId !== caveMsg.userId &&
-        currentUserId !== caveMsg.originUserId &&
-        !isCurrentUserAdmin
-    ) {
-        return session.text('.permissionDenied');
+    // Check delete permissions
+    if (!isCurrentUserAdmin) {
+        if (currentUserId === caveMsg.userId) {
+            // Contributor check
+            if (!cfg.allowContributorDelete) {
+                return session.text('.contributorDeleteDenied');
+            }
+        } else if (currentUserId === caveMsg.originUserId) {
+            // Sender check
+            if (!cfg.allowSenderDelete) {
+                return session.text('.senderDeleteDenied');
+            }
+        } else {
+            // Neither contributor nor sender nor admin
+            return session.text('.permissionDenied');
+        }
     }
 
     await ctx.database.remove('echo_cave', id);
