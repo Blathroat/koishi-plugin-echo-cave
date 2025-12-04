@@ -1,4 +1,4 @@
-import { saveImages } from './image-helper';
+import { processMediaElement } from './image-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import { Message } from '@pynickle/koishi-plugin-adapter-onebot/lib/types';
 import { Context } from 'koishi';
@@ -38,17 +38,7 @@ async function processForwardMessageContent(
     // deal with normal message
     return Promise.all(
         msg.message.map(async (element) => {
-            if (element.type === 'image') {
-                return {
-                    ...element,
-                    data: {
-                        ...element.data,
-                        url: await saveImages(ctx, element.data),
-                    },
-                };
-            }
-
-            return element;
+            return processMediaElement(ctx, element);
         })
     );
 }

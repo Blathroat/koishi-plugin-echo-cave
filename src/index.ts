@@ -255,6 +255,9 @@ async function addCave(ctx: Context, session: Session) {
         if (typeof message === 'string') {
             msgJson = CQCode.parse(message);
         } else {
+            if (message[0].type === 'video' || message[0].type === 'file') {
+                type = 'forward';
+            }
             msgJson = message;
         }
 
