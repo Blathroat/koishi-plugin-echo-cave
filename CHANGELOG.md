@@ -1,3 +1,9 @@
+## [1.12.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.12.0...v1.12.1) (2025-12-04)
+
+### 🚀 Improvements
+
+* try to find the correct userId if the original userId is wrong ([fb9ebbf](https://github.com/pynickle/koishi-plugin-echo-cave/commit/fb9ebbf14fbe2f48c77450cda2d145f851b74090))
+
 ## [1.12.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.11.0...v1.12.0) (2025-12-04)
 
 ### ✨ Features
