@@ -23,6 +23,7 @@ export async function sendCaveMsg(
         date,
         originName,
         userName,
+        nl: '\n',
     };
 
     const TEMPLATE_COUNT = 5;
