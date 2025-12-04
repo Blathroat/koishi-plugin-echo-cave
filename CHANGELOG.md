@@ -1,3 +1,9 @@
+## [1.10.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.2...v1.10.3) (2025-12-04)
+
+### 🚀 Improvements
+
+* make content not unique ([129a86c](https://github.com/pynickle/koishi-plugin-echo-cave/commit/129a86c8a934622a8578506e93f30ff4ee443938))
+
 ## [1.10.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.1...v1.10.2) (2025-12-04)
 
 ### 🐛 Bug Fixes
