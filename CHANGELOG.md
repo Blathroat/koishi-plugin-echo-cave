@@ -1,3 +1,9 @@
+## [1.10.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.9.2...v1.10.0) (2025-12-04)
+
+### ✨ Features
+
+* add localization for forward and msg template ([c27c509](https://github.com/pynickle/koishi-plugin-echo-cave/commit/c27c509e329c5c2dba7ce9b7bfaa82f8b99d4a47))
+
 ## [1.9.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.9.1...v1.9.2) (2025-12-04)
 
 ### 🚀 Improvements
