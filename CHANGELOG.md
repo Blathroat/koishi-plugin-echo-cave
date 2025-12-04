@@ -1,3 +1,9 @@
+## [1.11.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.4...v1.11.0) (2025-12-04)
+
+### ✨ Features
+
+* support more media saving ([1b3aacc](https://github.com/pynickle/koishi-plugin-echo-cave/commit/1b3aacc7dd7cf8f58e298415dfdb508fe532af48))
+
 ## [1.10.4](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.10.3...v1.10.4) (2025-12-04)
 
 ### 🚀 Improvements
