@@ -1,3 +1,9 @@
+## [1.13.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.12.2...v1.13.0) (2025-12-05)
+
+### ✨ Features
+
+* add record support ([1e78aa7](https://github.com/pynickle/koishi-plugin-echo-cave/commit/1e78aa7ea16a5252b600ca87b8caef9296b2d40f))
+
 ## [1.12.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.12.1...v1.12.2) (2025-12-05)
 
 ### 🐛 Bug Fixes
