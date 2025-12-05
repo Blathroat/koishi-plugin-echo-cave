@@ -8,7 +8,7 @@
     "maxVideoSize": "最大视频大小 (MB)",
     "maxFileSize": "最大文件大小 (MB)",
     "maxRecordSize": "最大录音大小 (MB)",
-    "useBase64ForMedia": "是否使用Base64编码保存媒体文件，开启后将直接存储文件内容而非文件路径"
+    "useBase64ForMedia": "是否使用 Base64 编码发送媒体文件，开启后将读取 base64 编码发送而不是使用 file uri"
   },
   "echo-cave": {
     "general": {
