@@ -247,3 +247,37 @@ export async function checkAndCleanMediaFiles(
         ctx.logger.error(`Failed to check and clean ${type} files: ${err}`);
     }
 }
+
+// 删除消息中包含的媒体文件
+export async function deleteMediaFilesFromMessage(ctx: Context, content: string) {
+    try {
+        const elements = JSON.parse(content);
+        const mediaElements = Array.isArray(elements) ? elements : [elements];
+
+        for (const element of mediaElements) {
+            if (
+                element.type === 'image' ||
+                element.type === 'video' ||
+                element.type === 'file' ||
+                element.type === 'record'
+            ) {
+                const fileUri = element.data?.file;
+                if (fileUri && fileUri.startsWith('file:///')) {
+                    // 提取本地文件路径
+                    const filePath = decodeURIComponent(fileUri.replace('file:///', ''));
+
+                    // 检查文件是否存在并删除
+                    try {
+                        await fs.access(filePath);
+                        await fs.unlink(filePath);
+                        ctx.logger.info(`Deleted media file: ${filePath}`);
+                    } catch (err) {
+                        ctx.logger.warn(`Failed to delete media file: ${filePath}, error: ${err}`);
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        ctx.logger.error(`Failed to parse message content when deleting media: ${err}`);
+    }
+}

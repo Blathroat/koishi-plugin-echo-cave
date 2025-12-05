@@ -1,6 +1,7 @@
 import '@pynickle/koishi-plugin-adapter-onebot';
 import { formatDate, sendCaveMsg } from './cave-helper';
 import { reconstructForwardMsg } from './forward-helper';
+import { deleteMediaFilesFromMessage } from './media-helper';
 import { processMessageContent } from './msg-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import fs from 'fs';
@@ -15,6 +16,7 @@ export interface Config {
     adminMessageProtection?: boolean;
     allowContributorDelete?: boolean;
     allowSenderDelete?: boolean;
+    deleteMediaWhenDeletingMsg?: boolean;
     enableSizeLimit?: boolean;
     maxImageSize?: number;
     maxVideoSize?: number;
@@ -27,6 +29,7 @@ export const Config: Schema<Config> = Schema.object({
     adminMessageProtection: Schema.boolean().default(false),
     allowContributorDelete: Schema.boolean().default(true),
     allowSenderDelete: Schema.boolean().default(true),
+    deleteMediaWhenDeletingMsg: Schema.boolean().default(true),
     enableSizeLimit: Schema.boolean().default(false),
     maxImageSize: Schema.number().default(2048),
     maxVideoSize: Schema.number().default(512),
@@ -221,6 +224,11 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
             // Neither contributor nor sender nor admin
             return session.text('.permissionDenied');
         }
+    }
+
+    // 如果配置开启，删除消息中的媒体文件
+    if (cfg.deleteMediaWhenDeletingMsg) {
+        await deleteMediaFilesFromMessage(ctx, caveMsg.content);
     }
 
     await ctx.database.remove('echo_cave', id);
