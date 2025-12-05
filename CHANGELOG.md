@@ -1,3 +1,9 @@
+## [1.16.4](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.3...v1.16.4) (2025-12-05)
+
+### 🐛 Bug Fixes
+
+* fix img error containing in userIds ([103e5d4](https://github.com/pynickle/koishi-plugin-echo-cave/commit/103e5d4e800cd8bc86fed4e5db6bbbb1fbe756a9))
+
 ## [1.16.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.2...v1.16.3) (2025-12-05)
 
 ### 🐛 Bug Fixes
