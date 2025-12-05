@@ -1,3 +1,9 @@
+## [1.16.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.15.0...v1.16.0) (2025-12-05)
+
+### ✨ Features
+
+* add related users ([ec38464](https://github.com/pynickle/koishi-plugin-echo-cave/commit/ec38464d2619416103a75cbc2ba963f0a276f93d))
+
 ## [1.15.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.14.2...v1.15.0) (2025-12-05)
 
 ### ✨ Features
