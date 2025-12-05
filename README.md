@@ -62,7 +62,7 @@ src/
 ├── index.ts              # 插件主入口，命令注册和核心功能
 ├── cave-helper.ts        # 回声洞消息发送辅助函数
 ├── forward-helper.ts     # 转发消息处理辅助函数
-├── image-helper.ts       # 图片保存辅助函数
+├── media-helper.ts       # 媒体文件保存辅助函数
 ├── msg-helper.ts         # 消息发送辅助函数
 ├── cqcode-helper.ts      # CQ 码处理辅助函数
 ├── onebot-helper.ts      # OneBot 适配器辅助函数

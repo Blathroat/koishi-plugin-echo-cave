@@ -52,12 +52,6 @@ declare module 'koishi' {
 export function apply(ctx: Context, cfg: Config) {
     ctx.i18n.define('zh-CN', require('./locales/zh-CN.json'));
 
-    const imgPath = path.join(ctx.baseDir, 'data', 'cave', 'images');
-
-    if (!fs.existsSync(imgPath)) {
-        fs.mkdirSync(imgPath, { recursive: true });
-    }
-
     ctx.model.extend(
         'echo_cave',
         {

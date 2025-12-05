@@ -1,5 +1,5 @@
-import { processMediaElement } from './image-helper';
 import { Config } from './index';
+import { processMediaElement } from './media-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import { Message } from '@pynickle/koishi-plugin-adapter-onebot/lib/types';
 import { Context, Session } from 'koishi';

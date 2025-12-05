@@ -82,16 +82,23 @@ export async function saveMedia(
 
 export async function processMediaElement(ctx: Context, element: any, cfg: Config) {
     if (element.type === 'image' || element.type === 'video' || element.type === 'file') {
+        const savedPath = await saveMedia(
+            ctx,
+            element.data,
+            element.type as 'image' | 'video' | 'file',
+            cfg
+        );
+
+        // Convert savedPath to file URI
+        const fileUri = `file:///${savedPath.replace(/\\/g, '/')}`;
+
         return {
             ...element,
             data: {
                 ...element.data,
-                url: await saveMedia(
-                    ctx,
-                    element.data,
-                    element.type as 'image' | 'video' | 'file',
-                    cfg
-                ),
+                file: fileUri,
+                // Remove the url field
+                url: undefined,
             },
         };
     }
