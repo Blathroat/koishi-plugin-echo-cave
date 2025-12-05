@@ -1,3 +1,9 @@
+## [1.16.7](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.6...v1.16.7) (2025-12-05)
+
+### 🚀 Improvements
+
+* add mention(at) ability for binding users ([b293603](https://github.com/pynickle/koishi-plugin-echo-cave/commit/b2936036c8e010b80327e30464d6ebcbc6d02476))
+
 ## [1.16.6](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.5...v1.16.6) (2025-12-05)
 
 ### 💄 Style Improvements
