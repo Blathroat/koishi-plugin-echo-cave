@@ -1,3 +1,9 @@
+## [1.16.3](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.2...v1.16.3) (2025-12-05)
+
+### 🐛 Bug Fixes
+
+* debug ([a22ad68](https://github.com/pynickle/koishi-plugin-echo-cave/commit/a22ad68903c8d092fa359dbbffc0e7a80c86ba7e))
+
 ## [1.16.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.1...v1.16.2) (2025-12-05)
 
 ### 💄 Style Improvements
