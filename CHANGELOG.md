@@ -1,3 +1,13 @@
+## [1.12.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.12.1...v1.12.2) (2025-12-05)
+
+### 🐛 Bug Fixes
+
+* fix wrong display of media ([e365d0f](https://github.com/pynickle/koishi-plugin-echo-cave/commit/e365d0f60f8e88005fac68b52afeda97565ee719))
+
+### 📚 Documentation
+
+* update README ([105909a](https://github.com/pynickle/koishi-plugin-echo-cave/commit/105909ac1a55b10a1ae88edbe59533375de20c55))
+
 ## [1.12.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.12.0...v1.12.1) (2025-12-04)
 
 ### 🚀 Improvements
