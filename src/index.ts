@@ -74,7 +74,7 @@ export function apply(ctx: Context, cfg: Config) {
     );
 
     ctx.command('cave [id:number]').action(
-        async ({ session }, id) => await getCave(ctx, session, id)
+        async ({ session }, id) => await getCave(ctx, session, cfg, id)
     );
 
     ctx.command('cave.echo').action(async ({ session }) => await addCave(ctx, session, cfg));
@@ -140,7 +140,7 @@ async function getCaveListByOriginUser(ctx: Context, session: Session) {
     return response;
 }
 
-async function getCave(ctx: Context, session: Session, id: number) {
+async function getCave(ctx: Context, session: Session, cfg: Config, id: number) {
     if (!session.guildId) {
         return session.text('echo-cave.general.privateChatReminder');
     }
