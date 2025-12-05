@@ -3,6 +3,7 @@ import { formatDate, sendCaveMsg } from './cave-helper';
 import { reconstructForwardMsg } from './forward-helper';
 import { deleteMediaFilesFromMessage } from './media-helper';
 import { processMessageContent } from './msg-helper';
+import { checkUsersInGroup } from './onebot-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import fs from 'fs';
 import { Context, Schema, Session } from 'koishi';
@@ -48,6 +49,7 @@ export interface EchoCave {
     originUserId: string;
     type: 'forward' | 'msg';
     content: string;
+    relatedUsers: string[];
 }
 
 declare module 'koishi' {
@@ -69,6 +71,7 @@ export function apply(ctx: Context, cfg: Config) {
             originUserId: 'string',
             type: 'string',
             content: 'text',
+            relatedUsers: 'list',
         },
         {
             primary: 'id',
@@ -80,7 +83,9 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }, id) => await getCave(ctx, session, cfg, id)
     );
 
-    ctx.command('cave.echo').action(async ({ session }) => await addCave(ctx, session, cfg));
+    ctx.command('cave.echo [...userIds:string]').action(
+        async ({ session }, ...userIds) => await addCave(ctx, session, cfg, userIds as string[])
+    );
 
     ctx.command('cave.wipe <id:number>').action(
         async ({ session }, id) => await deleteCave(ctx, session, cfg, id)
@@ -90,6 +95,10 @@ export function apply(ctx: Context, cfg: Config) {
 
     ctx.command('cave.trace').action(
         async ({ session }) => await getCaveListByOriginUser(ctx, session)
+    );
+
+    ctx.command('cave.bind <id:number> <...userIds:string>', { authority: 4 }).action(
+        async ({ session }, id, ...userIds) => await bindUsersToCave(ctx, session, id, userIds)
     );
 }
 
@@ -235,7 +244,7 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
     return session.text('.msgDeleted', [id]);
 }
 
-async function addCave(ctx: Context, session: Session, cfg: Config) {
+async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: string[]) {
     if (!session.guildId) {
         return session.text('echo-cave.general.privateChatReminder');
     }
@@ -286,6 +295,14 @@ async function addCave(ctx: Context, session: Session, cfg: Config) {
         }
     });
 
+    // Check if all users belong to the group if userIds are provided
+    if (userIds && userIds.length > 0) {
+        const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIds);
+        if (!isAllUsersInGroup) {
+            return session.text('.userNotInGroup');
+        }
+    }
+
     try {
         const result = await ctx.database.create('echo_cave', {
             channelId,
@@ -294,10 +311,44 @@ async function addCave(ctx: Context, session: Session, cfg: Config) {
             originUserId: quote.user.id,
             type,
             content,
+            relatedUsers: userIds || [],
         });
 
         return session.text('.msgSaved', [result.id]);
     } catch (error) {
         return session.text('.msgFailedToSave');
     }
+}
+
+async function bindUsersToCave(ctx: Context, session: Session, id: number, userIds: string[]) {
+    if (!session.guildId) {
+        return session.text('echo-cave.general.privateChatReminder');
+    }
+
+    if (!id) {
+        return session.text('.noIdProvided');
+    }
+
+    if (!userIds || userIds.length === 0) {
+        return session.text('.noUserIdProvided');
+    }
+
+    // Check if cave exists
+    const caves = await ctx.database.get('echo_cave', id);
+    if (caves.length === 0) {
+        return session.text('echo-cave.general.noMsgWithId');
+    }
+
+    // Check if all users belong to the group
+    const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIds);
+    if (!isAllUsersInGroup) {
+        return session.text('.userNotInGroup');
+    }
+
+    // Update cave with new related users (direct modification)
+    await ctx.database.set('echo_cave', id, {
+        relatedUsers: userIds,
+    });
+
+    return session.text('.userBoundSuccess', [id]);
 }

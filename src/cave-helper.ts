@@ -26,12 +26,22 @@ export async function sendCaveMsg(
     const originName = await getUserName(ctx, session, caveMsg.originUserId);
     const userName = await getUserName(ctx, session, caveMsg.userId);
 
+    // 格式化关联用户
+    let relatedUsersFormatted = '';
+    if (caveMsg.relatedUsers && caveMsg.relatedUsers.length > 0) {
+        const relatedUserNames = await Promise.all(
+            caveMsg.relatedUsers.map(async (userId) => await getUserName(ctx, session, userId))
+        );
+        relatedUsersFormatted = relatedUserNames.join(', ');
+    }
+
     // 模板数据
     const templateData = {
         id: caveMsg.id.toString(),
         date,
         originName,
         userName,
+        relatedUsers: relatedUsersFormatted,
         nl: '\n',
     };
 
