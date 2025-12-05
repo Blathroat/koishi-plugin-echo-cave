@@ -6,7 +6,8 @@
     "enableSizeLimit": "是否启用媒体文件大小限制",
     "maxImageSize": "最大图片大小 (MB)",
     "maxVideoSize": "最大视频大小 (MB)",
-    "maxFileSize": "最大文件大小 (MB)"
+    "maxFileSize": "最大文件大小 (MB)",
+    "maxRecordSize": "最大录音大小 (MB)"
   },
   "echo-cave": {
     "general": {

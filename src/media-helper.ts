@@ -7,7 +7,7 @@ import path from 'node:path';
 export async function saveMedia(
     ctx: Context,
     mediaElement: Record<string, any>,
-    type: 'image' | 'video' | 'file',
+    type: 'image' | 'video' | 'file' | 'record',
     cfg: Config
 ) {
     const mediaUrl: string = mediaElement.url;
@@ -20,7 +20,9 @@ export async function saveMedia(
                 ? 'png'
                 : type === 'video'
                   ? 'mp4'
-                  : 'bin'
+                  : type === 'record'
+                    ? 'mp3'
+                    : 'bin'
             : originalMediaName.slice(i + 1).toLowerCase();
     })();
 
@@ -55,6 +57,10 @@ export async function saveMedia(
                 ctx.logger.warn(`Invalid video content-type: ${contentType}`);
                 return mediaUrl;
             }
+            if (type === 'record' && !contentType.startsWith('audio/')) {
+                ctx.logger.warn(`Invalid record content-type: ${contentType}`);
+                return mediaUrl;
+            }
             // 对于 file 类型，不严格检查 content-type
         }
 
@@ -81,11 +87,16 @@ export async function saveMedia(
 }
 
 export async function processMediaElement(ctx: Context, element: any, cfg: Config) {
-    if (element.type === 'image' || element.type === 'video' || element.type === 'file') {
+    if (
+        element.type === 'image' ||
+        element.type === 'video' ||
+        element.type === 'file' ||
+        element.type === 'record'
+    ) {
         const savedPath = await saveMedia(
             ctx,
             element.data,
-            element.type as 'image' | 'video' | 'file',
+            element.type as 'image' | 'video' | 'file' | 'record',
             cfg
         );
 
@@ -109,7 +120,7 @@ export async function processMediaElement(ctx: Context, element: any, cfg: Confi
 export async function checkAndCleanMediaFiles(
     ctx: Context,
     cfg: Config,
-    type: 'image' | 'video' | 'file'
+    type: 'image' | 'video' | 'file' | 'record'
 ) {
     // 如果未启用大小限制，直接返回
     if (!cfg.enableSizeLimit) {
@@ -125,6 +136,8 @@ export async function checkAndCleanMediaFiles(
                 return (cfg.maxVideoSize || 500) * 1024 * 1024;
             case 'file':
                 return (cfg.maxFileSize || 1000) * 1024 * 1024;
+            case 'record':
+                return (cfg.maxRecordSize || 200) * 1024 * 1024;
         }
     })();
 

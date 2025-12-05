@@ -19,6 +19,7 @@ export interface Config {
     maxImageSize?: number;
     maxVideoSize?: number;
     maxFileSize?: number;
+    maxRecordSize?: number;
 }
 
 export const Config: Schema<Config> = Schema.object({
@@ -29,6 +30,7 @@ export const Config: Schema<Config> = Schema.object({
     maxImageSize: Schema.number().default(2048),
     maxVideoSize: Schema.number().default(512),
     maxFileSize: Schema.number().default(512),
+    maxRecordSize: Schema.number().default(512),
 }).i18n({
     'zh-CN': require('./locales/zh-CN.json')._config,
 });
