@@ -1,3 +1,9 @@
+## [1.14.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.14.1...v1.14.2) (2025-12-05)
+
+### 🚀 Improvements
+
+* improve the description of base64 config ([0a5ae39](https://github.com/pynickle/koishi-plugin-echo-cave/commit/0a5ae3985533eef2e58eae581532c62bb6f29b9e))
+
 ## [1.14.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.14.0...v1.14.1) (2025-12-05)
 
 ### 🐛 Bug Fixes
