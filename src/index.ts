@@ -90,7 +90,7 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }, ...ids) => await deleteCave(ctx, session, cfg, ids)
     );
 
-    ctx.command('cave.search [...userIds]').action(
+    ctx.command('cave.search <...userIds>').action(
         async ({ session }, ...userIds) => await searchCave(ctx, session, userIds)
     );
 
