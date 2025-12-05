@@ -1,13 +1,12 @@
 import '@pynickle/koishi-plugin-adapter-onebot';
 import { formatDate, sendCaveMsg } from './cave-helper';
+import { parseUserIds } from './cqcode-helper';
 import { reconstructForwardMsg } from './forward-helper';
 import { deleteMediaFilesFromMessage } from './media-helper';
 import { processMessageContent } from './msg-helper';
 import { checkUsersInGroup } from './onebot-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
-import fs from 'fs';
 import { Context, Schema, Session } from 'koishi';
-import path from 'node:path';
 
 export const name = 'echo-cave';
 
@@ -256,14 +255,20 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: st
     const { userId, channelId, quote } = session;
     const messageId = quote.id;
 
-    const correctUserIds: string[] = userIds
-        .map((s) => Number(s))
-        .filter((n) => !Number.isNaN(n))
-        .map(String);
-
-    // Check if all users belong to the group if userIds are provided (使用调试版本)
+    // Parse userIds to handle @mentions
+    let parsedUserIds: string[] = [];
     if (userIds && userIds.length > 0) {
-        const isAllUsersInGroup = await checkUsersInGroup(ctx, session, correctUserIds);
+        const result = parseUserIds(userIds);
+        if (result.error === 'invalid_all_mention') {
+            return session.text('.invalidAllMention');
+        }
+        parsedUserIds = result.parsedUserIds;
+
+        // Log parsed userIds for debugging
+        ctx.logger.info(`Parsed userIds in addCave: ${JSON.stringify(parsedUserIds)}`);
+
+        // Check if all users belong to the group if userIds are provided (使用调试版本)
+        const isAllUsersInGroup = await checkUsersInGroup(ctx, session, parsedUserIds);
         if (!isAllUsersInGroup) {
             return session.text('.userNotInGroup');
         }
@@ -316,7 +321,7 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: st
             originUserId: quote.user.id,
             type,
             content,
-            relatedUsers: correctUserIds || [],
+            relatedUsers: parsedUserIds || [],
         });
 
         return session.text('.msgSaved', [result.id]);
@@ -338,6 +343,17 @@ async function bindUsersToCave(ctx: Context, session: Session, id: number, userI
         return session.text('.noUserIdProvided');
     }
 
+    // Parse userIds to handle @mentions
+    let parsedUserIds: string[] = [];
+    const result = parseUserIds(userIds);
+    if (result.error === 'invalid_all_mention') {
+        return session.text('.invalidAllMention');
+    }
+    parsedUserIds = result.parsedUserIds;
+
+    // Log parsed userIds for debugging
+    ctx.logger.info(`Parsed userIds: ${JSON.stringify(parsedUserIds)}`);
+
     // Check if cave exists
     const caves = await ctx.database.get('echo_cave', id);
     if (caves.length === 0) {
@@ -345,14 +361,14 @@ async function bindUsersToCave(ctx: Context, session: Session, id: number, userI
     }
 
     // Check if all users belong to the group (使用调试版本)
-    const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIds);
+    const isAllUsersInGroup = await checkUsersInGroup(ctx, session, parsedUserIds);
     if (!isAllUsersInGroup) {
         return session.text('.userNotInGroup');
     }
 
     // Update cave with new related users (direct modification)
     await ctx.database.set('echo_cave', id, {
-        relatedUsers: userIds,
+        relatedUsers: parsedUserIds,
     });
 
     return session.text('.userBoundSuccess', [id]);
