@@ -3,7 +3,7 @@ import { formatDate, sendCaveMsg } from './cave-helper';
 import { reconstructForwardMsg } from './forward-helper';
 import { deleteMediaFilesFromMessage } from './media-helper';
 import { processMessageContent } from './msg-helper';
-import { checkUsersInGroup } from './onebot-helper';
+import { checkUsersInGroup, checkUsersInGroupDebug } from './onebot-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import fs from 'fs';
 import { Context, Schema, Session } from 'koishi';
@@ -84,7 +84,7 @@ export function apply(ctx: Context, cfg: Config) {
     );
 
     ctx.command('cave.echo [...userIds:string]').action(
-        async ({ session }, ...userIds) => await addCave(ctx, session, cfg, userIds as string[])
+        async ({ session }, ...userIds) => await addCave(ctx, session, cfg, userIds)
     );
 
     ctx.command('cave.wipe <id:number>').action(
@@ -256,6 +256,14 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: st
     const { userId, channelId, quote } = session;
     const messageId = quote.id;
 
+    // Check if all users belong to the group if userIds are provided (使用调试版本)
+    if (userIds && userIds.length > 0) {
+        const isAllUsersInGroup = await checkUsersInGroupDebug(ctx, session, userIds);
+        if (!isAllUsersInGroup) {
+            return session.text('.userNotInGroup');
+        }
+    }
+
     let content: string | CQCode[];
     let type: 'forward' | 'msg';
 
@@ -295,14 +303,6 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: st
         }
     });
 
-    // Check if all users belong to the group if userIds are provided
-    if (userIds && userIds.length > 0) {
-        const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIds);
-        if (!isAllUsersInGroup) {
-            return session.text('.userNotInGroup');
-        }
-    }
-
     try {
         const result = await ctx.database.create('echo_cave', {
             channelId,
@@ -339,8 +339,8 @@ async function bindUsersToCave(ctx: Context, session: Session, id: number, userI
         return session.text('echo-cave.general.noMsgWithId');
     }
 
-    // Check if all users belong to the group
-    const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIds);
+    // Check if all users belong to the group (使用调试版本)
+    const isAllUsersInGroup = await checkUsersInGroupDebug(ctx, session, userIds);
     if (!isAllUsersInGroup) {
         return session.text('.userNotInGroup');
     }
