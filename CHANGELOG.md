@@ -1,3 +1,9 @@
+## [1.16.9](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.8...v1.16.9) (2025-12-05)
+
+### 🐛 Bug Fixes
+
+* debug ([0926ce5](https://github.com/pynickle/koishi-plugin-echo-cave/commit/0926ce546487b189123b2604f4bae7719d732037))
+
 ## [1.16.8](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.7...v1.16.8) (2025-12-05)
 
 ### 🐛 Bug Fixes
