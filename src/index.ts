@@ -172,7 +172,7 @@ async function getCave(ctx: Context, session: Session, id: number) {
         caveMsg = caves[0];
     }
 
-    await sendCaveMsg(ctx, session, caveMsg);
+    await sendCaveMsg(ctx, session, caveMsg, cfg);
 }
 
 async function deleteCave(ctx: Context, session: Session, cfg: Config, id: number) {

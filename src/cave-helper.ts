@@ -1,5 +1,6 @@
 import { createTextMsg } from './cqcode-helper';
-import { EchoCave } from './index';
+import { Config, EchoCave } from './index';
+import { convertFileUriToBase64 } from './media-helper';
 import { getUserName } from './onebot-helper';
 import { CQCode } from '@pynickle/koishi-plugin-adapter-onebot';
 import { Context, Session } from 'koishi';
@@ -7,10 +8,18 @@ import { Context, Session } from 'koishi';
 export async function sendCaveMsg(
     ctx: Context,
     session: Session,
-    caveMsg: EchoCave
+    caveMsg: EchoCave,
+    cfg: Config
 ): Promise<void> {
     const { channelId } = session;
-    const content: CQCode[] = JSON.parse(caveMsg.content);
+    let content: CQCode[] = JSON.parse(caveMsg.content);
+
+    // Convert media elements to base64 if configured
+    if (cfg.useBase64ForMedia) {
+        content = await Promise.all(
+            content.map(async (element) => await convertFileUriToBase64(ctx, element))
+        );
+    }
 
     // 格式化必要信息
     const date = formatDate(caveMsg.createTime);

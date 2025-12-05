@@ -100,11 +100,37 @@ export async function processMediaElement(ctx: Context, element: any, cfg: Confi
             cfg
         );
 
-        let fileValue: string;
+        // Convert savedPath to file URI
+        const fileUri = `file:///${savedPath.replace(/\\/g, '/')}`;
 
-        if (cfg.useBase64ForMedia) {
+        return {
+            ...element,
+            data: {
+                ...element.data,
+                file: fileUri,
+                // Remove the url field
+                url: undefined,
+            },
+        };
+    }
+    return element;
+}
+
+// Convert file URI to base64 data URL
+export async function convertFileUriToBase64(ctx: Context, element: any): Promise<any> {
+    if (
+        element.type === 'image' ||
+        element.type === 'video' ||
+        element.type === 'file' ||
+        element.type === 'record'
+    ) {
+        // Extract file path from file URI
+        const fileUri = element.data.file;
+        const filePath = decodeURIComponent(fileUri.replace('file:///', ''));
+
+        try {
             // Read file content and convert to base64
-            const buffer = await fs.readFile(savedPath);
+            const buffer = await fs.readFile(filePath);
             const base64 = buffer.toString('base64');
 
             // Determine MIME type
@@ -116,22 +142,19 @@ export async function processMediaElement(ctx: Context, element: any, cfg: Confi
             };
 
             const mimeType = mimeTypes[element.type] || 'application/octet-stream';
-            fileValue = `data:${mimeType};base64,${base64}`;
-        } else {
-            // Convert savedPath to file URI
-            const fileUri = `file:///${savedPath.replace(/\\/g, '/')}`;
-            fileValue = fileUri;
-        }
+            const dataUrl = `data:${mimeType};base64,${base64}`;
 
-        return {
-            ...element,
-            data: {
-                ...element.data,
-                file: fileValue,
-                // Remove the url field
-                url: undefined,
-            },
-        };
+            return {
+                ...element,
+                data: {
+                    ...element.data,
+                    file: dataUrl,
+                },
+            };
+        } catch (err) {
+            ctx.logger.error(`Failed to convert ${element.type} to base64: ${err}`);
+            return element; // Return original element if conversion fails
+        }
     }
     return element;
 }
