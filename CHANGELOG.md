@@ -1,3 +1,9 @@
+## [1.15.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.14.2...v1.15.0) (2025-12-05)
+
+### ✨ Features
+
+* add config option whether to delete media when wiping a cave ([7642077](https://github.com/pynickle/koishi-plugin-echo-cave/commit/7642077bbd1ab02b733190003c99da05eaa3e625))
+
 ## [1.14.2](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.14.1...v1.14.2) (2025-12-05)
 
 ### 🚀 Improvements
