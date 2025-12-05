@@ -1,3 +1,9 @@
+## [1.14.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.13.0...v1.14.0) (2025-12-05)
+
+### ✨ Features
+
+* add base64 config for media ([8afee13](https://github.com/pynickle/koishi-plugin-echo-cave/commit/8afee13358b55353c0f08c685e9ec9cf8b2baa9a))
+
 ## [1.13.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.12.2...v1.13.0) (2025-12-05)
 
 ### ✨ Features
