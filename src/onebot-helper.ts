@@ -40,34 +40,33 @@ export async function checkUsersInGroupDebug(
 ): Promise<boolean> {
     try {
         const channelId = session.channelId;
-        console.log(`\n=== 调试信息：checkUsersInGroupDebug ===`);
-        console.log(`channelId: ${channelId}`);
+        ctx.logger.info(`\n=== 调试信息：checkUsersInGroupDebug ===`);
+        ctx.logger.info(`channelId: ${channelId}`);
 
         const groupMembers = await session.onebot.getGroupMemberList(channelId);
-        console.log(`群成员数量：${groupMembers.length}`);
-        console.log(`群成员ID列表：${groupMembers.map((member) => member.user_id).join(', ')}`);
+        ctx.logger.info(`群成员数量：${groupMembers.length}`);
+        ctx.logger.info(`群成员ID列表：${groupMembers.map((member) => member.user_id).join(', ')}`);
 
         const memberIds = groupMembers.map((member) => member.user_id.toString());
-        const userIdsSet = new Set(userIds);
 
-        console.log(`检查的用户ID：${userIds.join(', ')}`);
+        ctx.logger.info(`检查的用户ID：${userIds.join(', ')}`);
 
-        // 检查所有用户ID是否都在群组中
+        // 检查所有用户 ID 是否都在群组中
         const usersNotHere = userIds.filter((userId) => !memberIds.includes(userId));
 
         if (usersNotHere.length > 0) {
-            console.log(`❌ 不在群组的用户ID：${usersNotHere.join(', ')}`);
-            console.log(`=== 调试结束 ===\n`);
+            ctx.logger.info(`❌ 不在群组的用户ID：${usersNotHere.join(', ')}`);
+            ctx.logger.info(`=== 调试结束 ===\n`);
             return false;
         } else {
-            console.log(`✅ 所有用户都在群组中`);
-            console.log(`=== 调试结束 ===\n`);
+            ctx.logger.info(`✅ 所有用户都在群组中`);
+            ctx.logger.info(`=== 调试结束 ===\n`);
             return true;
         }
     } catch (error) {
-        console.error(`\n=== 调试错误：checkUsersInGroupDebug ===`);
-        console.error(`获取群成员列表失败：`, error);
-        console.error(`=== 调试结束 ===\n`);
+        ctx.logger.warn(`\n=== 调试错误：checkUsersInGroupDebug ===`);
+        ctx.logger.warn(`获取群成员列表失败：`, error);
+        ctx.logger.warn(`=== 调试结束 ===\n`);
         ctx.logger.warn(`获取群成员列表失败：`, error);
         return false;
     }
