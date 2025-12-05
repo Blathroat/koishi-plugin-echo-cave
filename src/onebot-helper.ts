@@ -5,7 +5,7 @@ export async function getUserName(ctx: Context, session: Session, userId: string
         const memberInfo = await session.onebot.getGroupMemberInfo(session.channelId, userId);
         return memberInfo.card || memberInfo.nickname || userId;
     } catch (error) {
-        ctx.logger.warn(`获取群成员信息失败（userId: ${userId}）：`, error);
+        ctx.logger.warn(`Failed to get group member info (userId: ${userId}):`, error);
         return userId;
     }
 }
@@ -25,7 +25,7 @@ export async function checkUsersInGroup(
         // 检查所有用户 ID 是否都在群组中
         return userIds.every((userId) => memberIds.includes(userId));
     } catch (error) {
-        ctx.logger.warn(`获取群成员列表失败：`, error);
+        ctx.logger.warn(`Failed to get group member list:`, error);
         return false;
     }
 }
