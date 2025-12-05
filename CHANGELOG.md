@@ -1,3 +1,9 @@
+## [1.16.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.16.0...v1.16.1) (2025-12-05)
+
+### 🚀 Improvements
+
+* use originName if relatedUsers not exist ([b50024e](https://github.com/pynickle/koishi-plugin-echo-cave/commit/b50024e4e1b188feb6a2164416473d62ca9351cb))
+
 ## [1.16.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.15.0...v1.16.0) (2025-12-05)
 
 ### ✨ Features
