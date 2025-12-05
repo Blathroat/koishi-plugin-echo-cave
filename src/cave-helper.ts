@@ -27,7 +27,7 @@ export async function sendCaveMsg(
     const userName = await getUserName(ctx, session, caveMsg.userId);
 
     // 格式化关联用户
-    let relatedUsersFormatted = '';
+    let relatedUsersFormatted = originName;
     if (caveMsg.relatedUsers && caveMsg.relatedUsers.length > 0) {
         const relatedUserNames = await Promise.all(
             caveMsg.relatedUsers.map(async (userId) => await getUserName(ctx, session, userId))
