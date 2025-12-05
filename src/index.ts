@@ -83,7 +83,7 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }, id) => await getCave(ctx, session, cfg, id)
     );
 
-    ctx.command('cave.echo [...userIds:number]').action(
+    ctx.command('cave.echo [...userIds:string]').action(
         async ({ session }, ...userIds) => await addCave(ctx, session, cfg, userIds)
     );
 
@@ -97,7 +97,7 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }) => await getCaveListByOriginUser(ctx, session)
     );
 
-    ctx.command('cave.bind <id:number> <...userIds:number>', { authority: 4 }).action(
+    ctx.command('cave.bind <id:number> <...userIds:string>', { authority: 4 }).action(
         async ({ session }, id, ...userIds) => await bindUsersToCave(ctx, session, id, userIds)
     );
 }
@@ -244,7 +244,7 @@ async function deleteCave(ctx: Context, session: Session, cfg: Config, id: numbe
     return session.text('.msgDeleted', [id]);
 }
 
-async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: number[]) {
+async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: string[]) {
     if (!session.guildId) {
         return session.text('echo-cave.general.privateChatReminder');
     }
@@ -256,11 +256,14 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: nu
     const { userId, channelId, quote } = session;
     const messageId = quote.id;
 
-    const userIdsStr = userIds.map((id) => id.toString());
+    const correctUserIds: string[] = userIds
+        .map((s) => Number(s))
+        .filter((n) => !Number.isNaN(n))
+        .map(String);
 
     // Check if all users belong to the group if userIds are provided (使用调试版本)
     if (userIds && userIds.length > 0) {
-        const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIdsStr);
+        const isAllUsersInGroup = await checkUsersInGroup(ctx, session, correctUserIds);
         if (!isAllUsersInGroup) {
             return session.text('.userNotInGroup');
         }
@@ -313,7 +316,7 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: nu
             originUserId: quote.user.id,
             type,
             content,
-            relatedUsers: userIdsStr || [],
+            relatedUsers: correctUserIds || [],
         });
 
         return session.text('.msgSaved', [result.id]);
@@ -322,7 +325,7 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: nu
     }
 }
 
-async function bindUsersToCave(ctx: Context, session: Session, id: number, userIds: number[]) {
+async function bindUsersToCave(ctx: Context, session: Session, id: number, userIds: string[]) {
     if (!session.guildId) {
         return session.text('echo-cave.general.privateChatReminder');
     }
@@ -335,8 +338,6 @@ async function bindUsersToCave(ctx: Context, session: Session, id: number, userI
         return session.text('.noUserIdProvided');
     }
 
-    const userIdsStr = userIds.map((id) => id.toString());
-
     // Check if cave exists
     const caves = await ctx.database.get('echo_cave', id);
     if (caves.length === 0) {
@@ -344,14 +345,14 @@ async function bindUsersToCave(ctx: Context, session: Session, id: number, userI
     }
 
     // Check if all users belong to the group (使用调试版本)
-    const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIdsStr);
+    const isAllUsersInGroup = await checkUsersInGroup(ctx, session, userIds);
     if (!isAllUsersInGroup) {
         return session.text('.userNotInGroup');
     }
 
     // Update cave with new related users (direct modification)
     await ctx.database.set('echo_cave', id, {
-        relatedUsers: userIdsStr,
+        relatedUsers: userIds,
     });
 
     return session.text('.userBoundSuccess', [id]);
