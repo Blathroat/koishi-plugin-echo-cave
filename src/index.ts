@@ -82,7 +82,7 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }, id) => await getCave(ctx, session, cfg, id)
     );
 
-    ctx.command('cave.echo [...userIds:string]').action(
+    ctx.command('cave.echo [...userIds:user]').action(
         async ({ session }, ...userIds) => await addCave(ctx, session, cfg, userIds)
     );
 
@@ -96,7 +96,7 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }) => await getCaveListByOriginUser(ctx, session)
     );
 
-    ctx.command('cave.bind <id:number> <...userIds:string>', { authority: 4 }).action(
+    ctx.command('cave.bind <id:number> <...userIds:user>', { authority: 4 }).action(
         async ({ session }, id, ...userIds) => await bindUsersToCave(ctx, session, id, userIds)
     );
 }

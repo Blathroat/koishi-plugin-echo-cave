@@ -17,14 +17,6 @@ export function createTextMsg(content: string) {
 export function parseUserIds(userIds: string[]): ParseResult {
     const parsedUserIds: string[] = [];
     for (const userIdStr of userIds) {
-        // Check for 'all' mention directly at the beginning
-        if (userIdStr === 'all') {
-            return {
-                parsedUserIds: [],
-                error: 'invalid_all_mention',
-            };
-        }
-
         try {
             const cqCode = CQCode.from(userIdStr);
             if (cqCode.type === 'at') {
