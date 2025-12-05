@@ -1,3 +1,13 @@
+## [1.14.1](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.14.0...v1.14.1) (2025-12-05)
+
+### 🐛 Bug Fixes
+
+* fix build error ([8cffab2](https://github.com/pynickle/koishi-plugin-echo-cave/commit/8cffab2f4ad5c5afb831e5a6c2be0c9d5c45ef60))
+
+### 🚀 Improvements
+
+* read base64 when sending msg ([b1ce25d](https://github.com/pynickle/koishi-plugin-echo-cave/commit/b1ce25d5b033c833875352f1cc0f6789930e6a31))
+
 ## [1.14.0](https://github.com/pynickle/koishi-plugin-echo-cave/compare/v1.13.0...v1.14.0) (2025-12-05)
 
 ### ✨ Features
