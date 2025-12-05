@@ -39,10 +39,11 @@ export function parseUserIds(userIds: string[]): ParseResult {
             }
         } catch (e) {
             // If parsing fails, check if it's a valid number
-            const num = Number(userIdStr);
+            /*const num = Number(userIdStr);
             if (!Number.isNaN(num)) {
                 parsedUserIds.push(String(num));
-            }
+            }*/
+            parsedUserIds.push(userIdStr.split(":")[1]);
         }
     }
     return {

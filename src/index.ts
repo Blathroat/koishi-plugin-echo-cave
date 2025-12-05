@@ -258,6 +258,7 @@ async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: st
     // Parse userIds to handle @mentions
     let parsedUserIds: string[] = [];
     if (userIds && userIds.length > 0) {
+        ctx.logger.info(`Original userIds in addCave: ${JSON.stringify(userIds)}`);
         const result = parseUserIds(userIds);
         if (result.error === 'invalid_all_mention') {
             return session.text('.invalidAllMention');
