@@ -20,6 +20,7 @@ export interface Config {
     maxVideoSize?: number;
     maxFileSize?: number;
     maxRecordSize?: number;
+    useBase64ForMedia?: boolean;
 }
 
 export const Config: Schema<Config> = Schema.object({
@@ -31,6 +32,7 @@ export const Config: Schema<Config> = Schema.object({
     maxVideoSize: Schema.number().default(512),
     maxFileSize: Schema.number().default(512),
     maxRecordSize: Schema.number().default(512),
+    useBase64ForMedia: Schema.boolean().default(false),
 }).i18n({
     'zh-CN': require('./locales/zh-CN.json')._config,
 });

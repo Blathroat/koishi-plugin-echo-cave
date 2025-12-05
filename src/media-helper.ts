@@ -100,14 +100,34 @@ export async function processMediaElement(ctx: Context, element: any, cfg: Confi
             cfg
         );
 
-        // Convert savedPath to file URI
-        const fileUri = `file:///${savedPath.replace(/\\/g, '/')}`;
+        let fileValue: string;
+
+        if (cfg.useBase64ForMedia) {
+            // Read file content and convert to base64
+            const buffer = await fs.readFile(savedPath);
+            const base64 = buffer.toString('base64');
+
+            // Determine MIME type
+            const mimeTypes: Record<string, string> = {
+                image: 'image/jpeg',
+                video: 'video/mp4',
+                record: 'audio/mpeg',
+                file: 'application/octet-stream',
+            };
+
+            const mimeType = mimeTypes[element.type] || 'application/octet-stream';
+            fileValue = `data:${mimeType};base64,${base64}`;
+        } else {
+            // Convert savedPath to file URI
+            const fileUri = `file:///${savedPath.replace(/\\/g, '/')}`;
+            fileValue = fileUri;
+        }
 
         return {
             ...element,
             data: {
                 ...element.data,
-                file: fileUri,
+                file: fileValue,
                 // Remove the url field
                 url: undefined,
             },
