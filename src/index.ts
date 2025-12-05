@@ -86,8 +86,12 @@ export function apply(ctx: Context, cfg: Config) {
         async ({ session }, ...userIds) => await addCave(ctx, session, cfg, userIds)
     );
 
-    ctx.command('cave.wipe <id:number>').action(
-        async ({ session }, id) => await deleteCave(ctx, session, cfg, id)
+    ctx.command('cave.wipe <...ids:number>').action(
+        async ({ session }, ...ids) => await deleteCave(ctx, session, cfg, ids)
+    );
+
+    ctx.command('cave.search [...userIds]').action(
+        async ({ session }, ...userIds) => await searchCave(ctx, session, userIds)
     );
 
     ctx.command('cave.listen').action(async ({ session }) => await getCaveListByUser(ctx, session));
@@ -186,61 +190,77 @@ async function getCave(ctx: Context, session: Session, cfg: Config, id: number) 
     await sendCaveMsg(ctx, session, caveMsg, cfg);
 }
 
-async function deleteCave(ctx: Context, session: Session, cfg: Config, id: number) {
+async function deleteCave(ctx: Context, session: Session, cfg: Config, ids: number[]) {
     if (!session.guildId) {
         return session.text('echo-cave.general.privateChatReminder');
     }
 
-    if (!id) {
+    if (!ids || ids.length === 0) {
         return session.text('.noIdProvided');
     }
 
-    const caves = await ctx.database.get('echo_cave', id);
-
-    if (caves.length === 0) {
-        return session.text('echo-cave.general.noMsgWithId');
-    }
-
-    const caveMsg = caves[0];
+    const failedIds: number[] = [];
     const currentUserId = session.userId;
     const user = await ctx.database.getUser(session.platform, currentUserId);
     const userAuthority = user.authority;
     const isCurrentUserAdmin = userAuthority >= 4;
 
-    if (cfg.adminMessageProtection) {
-        const caveUser = await ctx.database.getUser(session.platform, caveMsg.userId);
-        const isCaveUserAdmin = caveUser.authority >= 4;
+    for (const id of ids) {
+        try {
+            const caves = await ctx.database.get('echo_cave', id);
 
-        if (isCaveUserAdmin && !isCurrentUserAdmin) {
-            return session.text('.adminOnly');
+            if (caves.length === 0) {
+                failedIds.push(id);
+                continue;
+            }
+
+            const caveMsg = caves[0];
+
+            if (cfg.adminMessageProtection) {
+                const caveUser = await ctx.database.getUser(session.platform, caveMsg.userId);
+                const isCaveUserAdmin = caveUser.authority >= 4;
+
+                if (isCaveUserAdmin && !isCurrentUserAdmin) {
+                    failedIds.push(id);
+                    continue;
+                }
+            }
+
+            // Check delete permissions
+            let hasPermission = isCurrentUserAdmin;
+            if (!hasPermission) {
+                if (currentUserId === caveMsg.userId) {
+                    // Contributor check
+                    hasPermission = cfg.allowContributorDelete;
+                } else if (currentUserId === caveMsg.originUserId) {
+                    // Sender check
+                    hasPermission = cfg.allowSenderDelete;
+                }
+            }
+
+            if (!hasPermission) {
+                failedIds.push(id);
+                continue;
+            }
+
+            // 如果配置开启，删除消息中的媒体文件
+            if (cfg.deleteMediaWhenDeletingMsg) {
+                await deleteMediaFilesFromMessage(ctx, caveMsg.content);
+            }
+
+            await ctx.database.remove('echo_cave', id);
+        } catch (error) {
+            failedIds.push(id);
         }
     }
 
-    // Check delete permissions
-    if (!isCurrentUserAdmin) {
-        if (currentUserId === caveMsg.userId) {
-            // Contributor check
-            if (!cfg.allowContributorDelete) {
-                return session.text('.contributorDeleteDenied');
-            }
-        } else if (currentUserId === caveMsg.originUserId) {
-            // Sender check
-            if (!cfg.allowSenderDelete) {
-                return session.text('.senderDeleteDenied');
-            }
-        } else {
-            // Neither contributor nor sender nor admin
-            return session.text('.permissionDenied');
-        }
+    if (failedIds.length === 0) {
+        return session.text('.msgDeletedMultiple', [ids.length]);
+    } else if (failedIds.length === ids.length) {
+        return session.text('.msgDeleteFailedAll', [failedIds.join(', ')]);
+    } else {
+        return session.text('.msgDeletePartial', [failedIds.join(', ')]);
     }
-
-    // 如果配置开启，删除消息中的媒体文件
-    if (cfg.deleteMediaWhenDeletingMsg) {
-        await deleteMediaFilesFromMessage(ctx, caveMsg.content);
-    }
-
-    await ctx.database.remove('echo_cave', id);
-    return session.text('.msgDeleted', [id]);
 }
 
 async function addCave(ctx: Context, session: Session, cfg: Config, userIds?: string[]) {
@@ -373,4 +393,53 @@ async function bindUsersToCave(ctx: Context, session: Session, id: number, userI
     });
 
     return session.text('.userBoundSuccess', [id]);
+}
+
+async function searchCave(ctx: Context, session: Session, userIds: string[]) {
+    if (!session.guildId) {
+        return session.text('echo-cave.general.privateChatReminder');
+    }
+
+    if (!userIds || userIds.length === 0) {
+        return session.text('.noUserIdProvided');
+    }
+
+    // Parse userIds to handle @mentions
+    const result = parseUserIds(userIds);
+    if (result.error === 'invalid_all_mention') {
+        return session.text('.invalidAllMention');
+    }
+    const parsedUserIds = result.parsedUserIds;
+
+    if (parsedUserIds.length === 0) {
+        return session.text('.noValidUserIdProvided');
+    }
+
+    // Check if user belongs to the group
+    const isUserInGroup = await checkUsersInGroup(ctx, session, parsedUserIds);
+    if (!isUserInGroup) {
+        return session.text('.userNotInGroup');
+    }
+
+    const targetUserId = parsedUserIds[0]; // 只处理第一个用户ID
+    const { channelId } = session;
+
+    // 搜索所有匹配的cave条目
+    const caves = await ctx.database.get('echo_cave', {
+        channelId,
+    });
+
+    const matchingCaves = caves.filter(cave => 
+        cave.originUserId === targetUserId || cave.relatedUsers.includes(targetUserId)
+    );
+
+    if (matchingCaves.length === 0) {
+        return session.text('.noMatchingCaves', [targetUserId]);
+    }
+
+    // 提取cave ID并格式化结果
+    const caveIds = matchingCaves.map(cave => cave.id).join(', ');
+    const count = matchingCaves.length;
+
+    return session.text('.searchResult', [count, caveIds]);
 }

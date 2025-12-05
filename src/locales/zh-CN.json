@@ -68,14 +68,28 @@
       }
     },
     "cave.wipe": {
-      "description": "抹去特定 id 的回声洞信息",
+      "description": "抹去特定 id 的回声洞信息，支持多个 ID",
       "messages": {
         "noIdProvided": "❌ 请提供要删除的回声洞消息 ID！",
         "adminOnly": "⛔ 该消息由管理员发布，已开启管理员消息保护，只有管理员可以删除。",
         "permissionDenied": "⛔ 您没有权限删除此消息！只有管理员可以删除。",
         "contributorDeleteDenied": "⛔ 您没有权限删除此消息！当前配置不允许投稿者删除回声洞。",
         "senderDeleteDenied": "⛔ 您没有权限删除此消息！当前配置不允许原始发送者删除回声洞。",
-        "msgDeleted": "✅ 已成功抹去回声洞消息 ID：{0}"
+        "msgDeleted": "✅ 已成功抹去回声洞消息 ID：{0}",
+        "msgDeletedMultiple": "✅ 已成功抹去 {0} 条回声洞消息！",
+        "msgDeleteFailedAll": "❌ 所有指定的回声洞消息 ID 均删除失败：{0}",
+        "msgDeletePartial": "⚠️ 部分回声洞消息删除失败，失败 ID：{0}"
+      }
+    },
+    "cave.search": {
+      "description": "搜索与指定用户相关的回声洞",
+      "messages": {
+        "noUserIdProvided": "❌ 请提供要搜索的用户 ID！",
+        "invalidAllMention": "❌ 不支持 @全体成员，请直接指定具体用户！",
+        "userNotInGroup": "❌ 提供的用户 ID 不全属于该群组！",
+        "noValidUserIdProvided": "❌ 未提供有效的用户 ID！",
+        "noMatchingCaves": "🔍 未找到与用户 {0} 相关的回声洞消息",
+        "searchResult": "🔍 共找到 {0} 条与该用户相关的回声洞消息：\nID 列表：{1}"
       }
     },
     "cave.listen": {
